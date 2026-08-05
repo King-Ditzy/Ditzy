@@ -1,212 +1,500 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adit Store - E-Commerce</title>
+    <title>GemShop - Advanced Admin Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* Mengatur ulang gaya bawaan browser */
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        /* Custom Scrollbar for better look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
         }
         
-        body { 
-            background-color: #f4f7f6; 
-            color: #333; 
-            line-height: 1.6; 
-        }
-
-        /* Desain Header / Navigasi */
-        header { 
-            background: #2c3e50; 
-            color: #fff; 
-            padding: 1rem 5%; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        header h1 { 
-            font-size: 1.5rem; 
-            letter-spacing: 1px;
-        }
-        
-        .nav-links a { 
-            color: #fff; 
-            text-decoration: none; 
-            margin-left: 20px; 
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #3498db;
-        }
-
-        /* Desain Wadah Utama */
-        .container { 
-            max-width: 1000px; 
-            margin: 3rem auto; 
-            padding: 0 15px; 
-        }
-
-        /* Kotak Produk */
-        .product-wrapper { 
-            display: flex; 
-            flex-wrap: wrap; 
-            background: #fff; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.05); 
-        }
-
-        /* Area Gambar Produk */
-        .product-image { 
-            flex: 1; 
-            min-width: 300px; 
-            background: #ecf0f1; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 2rem; 
-        }
-        
-        .product-image img { 
-            max-width: 100%; 
-            border-radius: 8px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        /* Area Detail Produk */
-        .product-details { 
-            flex: 1; 
-            min-width: 300px; 
-            padding: 3rem 2.5rem; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        .badge { 
-            background: #e74c3c; 
-            color: #fff; 
-            padding: 5px 12px; 
-            border-radius: 20px; 
-            font-size: 0.75rem; 
-            font-weight: bold; 
-            text-transform: uppercase; 
-            align-self: flex-start;
-            margin-bottom: 15px;
-        }
-        
-        .product-title { 
-            font-size: 2.2rem; 
-            margin-bottom: 10px; 
-            color: #2c3e50; 
-            line-height: 1.2;
-        }
-        
-        .product-price { 
-            font-size: 1.8rem; 
-            color: #27ae60; 
-            font-weight: bold; 
-            margin-bottom: 20px; 
-        }
-        
-        .product-description { 
-            color: #7f8c8d; 
-            margin-bottom: 30px; 
-            font-size: 1rem;
-        }
-
-        /* Tombol Beli */
-        .btn-add { 
-            background: #3498db; 
-            color: #fff; 
-            border: none; 
-            padding: 15px 30px; 
-            font-size: 1.1rem; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            width: 100%; 
-            font-weight: bold; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .btn-add:hover { 
-            background: #2980b9; 
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-        }
-
-        /* Footer */
-        footer { 
-            text-align: center; 
-            padding: 2rem; 
-            margin-top: 2rem; 
-            color: #95a5a6; 
-            font-size: 0.9rem;
-        }
-
-        /* Responsivitas untuk Layar HP */
-        @media (max-width: 768px) { 
-            .product-wrapper { 
-                flex-direction: column; 
-            } 
-            .product-details {
-                padding: 2rem 1.5rem;
-            }
-            .product-title {
-                font-size: 1.8rem;
-            }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 flex h-screen overflow-hidden text-slate-800">
 
-    <!-- Bagian Navigasi Atas -->
-    <header>
-        <h1>Adit Store</h1>
-        <nav class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">Katalog</a>
-            <a href="#">🛒 (0)</a>
-        </nav>
-    </header>
-
-    <!-- Konten Produk -->
-    <div class="container">
-        <div class="product-wrapper">
-            
-            <!-- Gambar Produk -->
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Sepatu Keren">
+    <!-- Sidebar -->
+    <aside class="w-72 bg-slate-900 text-white flex flex-col hidden lg:flex shadow-2xl z-20">
+        <div class="h-20 flex items-center px-8 border-b border-slate-800">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-fuchsia-500 flex items-center justify-center mr-3 shadow-lg shadow-brand-500/30">
+                <i class="fa-solid fa-gem text-white text-xl"></i>
             </div>
-            
-            <!-- Detail & Informasi Penjualan -->
-            <div class="product-details">
-                <span class="badge">Terlaris</span>
-                <h2 class="product-title">Sneakers Urban Red X</h2>
-                <div class="product-price">Rp 750.000</div>
-                <p class="product-description">
-                    Tingkatkan gaya kamu dengan Sneakers Urban Red X. Dibuat dengan material premium yang menjamin kenyamanan maksimal sepanjang hari. Desainnya yang *sporty* cocok untuk nongkrong maupun aktivitas kasual lainnya.
-                </p>
-                <button class="btn-add">Tambah ke Keranjang</button>
-            </div>
-            
+            <h1 class="text-2xl font-bold tracking-wide">GemShop<span class="text-brand-500">.</span></h1>
         </div>
-    </div>
+        
+        <div class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Menu Utama</div>
+        <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
+            <a href="#" class="flex items-center px-4 py-3.5 bg-gradient-to-r from-brand-600 to-brand-500 text-white rounded-xl shadow-md shadow-brand-500/20 transition-all font-medium">
+                <i class="fa-solid fa-box w-6 text-lg"></i> Manajemen Produk
+            </a>
+            <a href="#" class="flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl transition-all font-medium">
+                <i class="fa-solid fa-chart-pie w-6 text-lg"></i> Analitik Penjualan
+            </a>
+            <a href="#" class="flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl transition-all font-medium">
+                <i class="fa-solid fa-users w-6 text-lg"></i> Basis Pelanggan
+            </a>
+            <a href="#" class="flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl transition-all font-medium">
+                <i class="fa-solid fa-wallet w-6 text-lg"></i> Keuangan
+            </a>
+        </nav>
+        <div class="p-4 border-t border-slate-800">
+            <a href="#" class="flex items-center px-4 py-3 text-slate-400 hover:text-red-400 hover:bg-slate-800/50 rounded-xl transition-all font-medium">
+                <i class="fa-solid fa-arrow-right-from-bracket w-6 text-lg"></i> Keluar
+            </a>
+        </div>
+    </aside>
 
-    <!-- Bagian Bawah Halaman -->
-    <footer>
-        <p>&copy; 2026 Halaman Adit. Dibuat sebagai Mockup Penjualan E-Commerce.</p>
-    </footer>
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-y-auto relative">
+        
+        <!-- Header -->
+        <header class="h-20 glass-card border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10">
+            <div class="flex items-center gap-4">
+                <button class="lg:hidden text-slate-500 hover:text-brand-600 text-xl"><i class="fa-solid fa-bars"></i></button>
+                <h2 class="text-2xl font-bold text-slate-800 hidden sm:block">Dashboard Overview</h2>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <!-- Search -->
+                <div class="relative hidden md:block">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" placeholder="Cari produk atau pesanan..." class="pl-10 pr-4 py-2 bg-slate-100 border-none rounded-full w-64 focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition-all">
+                </div>
+                
+                <div class="flex items-center gap-4 border-l pl-6 border-slate-200">
+                    <button class="relative text-slate-400 hover:text-brand-600 transition-colors">
+                        <i class="fa-solid fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <div class="flex items-center gap-3 cursor-pointer hover:bg-slate-50 p-1 pr-3 rounded-full transition-colors border border-transparent hover:border-slate-200">
+                        <img src="https://ui-avatars.com/api/?name=Admin+Pro&background=8b5cf6&color=fff" alt="Profile" class="w-9 h-9 rounded-full shadow-sm">
+                        <div class="hidden md:block text-sm">
+                            <p class="font-semibold text-slate-700 leading-tight">Admin Pro</p>
+                            <p class="text-xs text-slate-500">Superadmin</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 ml-1"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
 
+        <div class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+            
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-brand-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-in-out opacity-50"></div>
+                    <div class="relative z-10 flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 mb-1">Total Produk</p>
+                            <h3 class="text-3xl font-bold text-slate-800" id="stat-total-product">0</h3>
+                            <p class="text-xs font-medium text-emerald-500 mt-2 flex items-center gap-1">
+                                <i class="fa-solid fa-arrow-trend-up"></i> +12% bulan ini
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-xl shadow-inner">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-in-out opacity-50"></div>
+                    <div class="relative z-10 flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 mb-1">Total Pendapatan</p>
+                            <h3 class="text-3xl font-bold text-slate-800">Rp 128M</h3>
+                            <p class="text-xs font-medium text-emerald-500 mt-2 flex items-center gap-1">
+                                <i class="fa-solid fa-arrow-trend-up"></i> +8.5% bulan ini
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl shadow-inner">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 3 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-in-out opacity-50"></div>
+                    <div class="relative z-10 flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 mb-1">Pesanan Baru</p>
+                            <h3 class="text-3xl font-bold text-slate-800">842</h3>
+                            <p class="text-xs font-medium text-rose-500 mt-2 flex items-center gap-1">
+                                <i class="fa-solid fa-arrow-trend-down"></i> -2% hari ini
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl shadow-inner">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 shadow-lg border border-slate-700 relative overflow-hidden text-white">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full"></div>
+                    <div class="relative z-10 flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-slate-300 mb-1">Peringatan Stok</p>
+                            <h3 class="text-3xl font-bold text-white mb-2" id="stat-low-stock">0</h3>
+                            <div class="inline-block px-2 py-1 bg-rose-500/20 text-rose-300 rounded text-xs font-semibold border border-rose-500/30">
+                                Butuh Restock Segera!
+                            </div>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-white/10 text-rose-400 flex items-center justify-center text-xl backdrop-blur-sm border border-white/10">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">Grafik Penjualan 7 Hari Terakhir</h3>
+                        <p class="text-sm text-slate-500">Statistik pendapatan harian toko</p>
+                    </div>
+                    <button class="px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                        <i class="fa-solid fa-download mr-2"></i>Export Data
+                    </button>
+                </div>
+                <div class="relative h-72 w-full">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Content Grid (Form & Table) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
+                
+                <!-- Add Product Form -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 lg:col-span-1 h-fit sticky top-24">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-800">Tambah Produk</h3>
+                    </div>
+                    
+                    <form id="product-form" class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Nama Produk</label>
+                            <input type="text" id="p-name" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white transition-all outline-none" placeholder="Masukkan nama produk...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Kategori</label>
+                            <div class="relative">
+                                <select id="p-category" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white transition-all outline-none appearance-none">
+                                    <option value="Fashion">👗 Fashion & Pakaian</option>
+                                    <option value="Elektronik">💻 Elektronik & Gadget</option>
+                                    <option value="Makanan">🍔 Makanan & Minuman</option>
+                                    <option value="Lainnya">📦 Lainnya</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none text-sm"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Harga (Rp)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 font-medium">Rp</span>
+                                <input type="number" id="p-price" required class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white transition-all outline-none" placeholder="0">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Stok Tersedia</label>
+                            <input type="number" id="p-stock" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white transition-all outline-none" placeholder="Jumlah stok...">
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-brand-500/30 transform hover:-translate-y-0.5 mt-2 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Data Produk
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Product Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 lg:col-span-2 overflow-hidden flex flex-col">
+                    <!-- Table Header & Filter -->
+                    <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">Manajemen Inventaris</h3>
+                            <p class="text-sm text-slate-500">Kelola daftar produk dan stok barang.</p>
+                        </div>
+                        
+                        <!-- Filter Kategori -->
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <label class="text-sm font-medium text-slate-600"><i class="fa-solid fa-filter mr-1"></i> Filter:</label>
+                            <select id="filter-category" onchange="renderTable()" class="bg-white border border-slate-200 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-500 outline-none shadow-sm flex-1">
+                                <option value="All">Semua Kategori</option>
+                                <option value="Fashion">Fashion & Pakaian</option>
+                                <option value="Elektronik">Elektronik & Gadget</option>
+                                <option value="Makanan">Makanan & Minuman</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
+                                    <th class="py-4 px-6">Info Produk</th>
+                                    <th class="py-4 px-6">Harga</th>
+                                    <th class="py-4 px-6 text-center">Stok</th>
+                                    <th class="py-4 px-6 text-right">Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-list" class="text-sm divide-y divide-slate-100">
+                                <!-- Data dari JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Empty State (Hidden by default) -->
+                    <div id="empty-state" class="hidden flex-col items-center justify-center py-12 px-4 text-center">
+                        <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-3xl mb-4">
+                            <i class="fa-solid fa-box-open"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-700">Tidak ada produk</h4>
+                        <p class="text-slate-500 text-sm mt-1 max-w-sm">Kategori ini masih kosong atau belum ada produk yang ditambahkan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // === INISIALISASI CHART.JS ===
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        
+        // Buat gradien untuk bar chart
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, '#8b5cf6'); // brand-500
+        gradient.addColorStop(1, '#c084fc'); // fuchsia-400
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+                datasets: [{
+                    label: 'Pendapatan (Juta Rp)',
+                    data: [12.5, 15.2, 11.8, 18.5, 22.1, 28.4, 25.0],
+                    backgroundColor: gradient,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    barThickness: 32
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        titleFont: { family: 'Poppins', size: 14 },
+                        bodyFont: { family: 'Poppins', size: 13 },
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Rp ' + context.parsed.y + ' Juta';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [4, 4], color: '#f1f5f9', drawBorder: false },
+                        ticks: { font: { family: 'Poppins' }, color: '#64748b' }
+                    },
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { font: { family: 'Poppins' }, color: '#64748b' }
+                    }
+                }
+            }
+        });
+
+        // === LOGIKA CRUD & FILTER PRODUK ===
+        
+        // Data Dummy
+        let products = [
+            { id: 1, name: "MacBook Pro M2 2023", category: "Elektronik", price: 21500000, stock: 8 },
+            { id: 2, name: "Sneakers Air Jordan 1", category: "Fashion", price: 3200000, stock: 15 },
+            { id: 3, name: "Kopi Arabica Premium 500g", category: "Makanan", price: 85000, stock: 120 },
+            { id: 4, name: "Smart TV Samsung 55 Inch", category: "Elektronik", price: 7800000, stock: 4 },
+            { id: 5, name: "Jaket Bomber Pria Hitam", category: "Fashion", price: 450000, stock: 32 }
+        ];
+
+        // Format Uang Rupiah
+        const formatRupiah = (number) => {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
+        };
+
+        // Fungsi Render Tabel
+        const renderTable = () => {
+            const tbody = document.getElementById('product-list');
+            const emptyState = document.getElementById('empty-state');
+            const filterValue = document.getElementById('filter-category').value;
+            
+            tbody.innerHTML = '';
+            
+            // Logika Filter
+            const filteredProducts = filterValue === 'All' 
+                ? products 
+                : products.filter(p => p.category === filterValue);
+
+            // Update Statistik (menghitung seluruh produk di database, bukan yang difilter)
+            document.getElementById('stat-total-product').innerText = products.length;
+            const lowStockCount = products.filter(p => p.stock < 10).length;
+            document.getElementById('stat-low-stock').innerText = lowStockCount;
+
+            // Tampilkan empty state jika data kosong
+            if (filteredProducts.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+                
+                // Render baris tabel
+                filteredProducts.forEach((product) => {
+                    // Penentuan warna badge kategori
+                    let catColor = 'bg-slate-100 text-slate-600';
+                    if(product.category === 'Elektronik') catColor = 'bg-blue-50 text-blue-600 border border-blue-200';
+                    if(product.category === 'Fashion') catColor = 'bg-fuchsia-50 text-fuchsia-600 border border-fuchsia-200';
+                    if(product.category === 'Makanan') catColor = 'bg-amber-50 text-amber-600 border border-amber-200';
+
+                    // Penentuan warna status stok
+                    let stockColor = 'bg-emerald-50 text-emerald-600 border-emerald-200';
+                    let stockIcon = '<i class="fa-solid fa-check mr-1"></i>';
+                    if(product.stock < 10) {
+                        stockColor = 'bg-rose-50 text-rose-600 border-rose-200';
+                        stockIcon = '<i class="fa-solid fa-triangle-exclamation mr-1 text-xs"></i>';
+                    }
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50/80 transition-colors group";
+                    tr.innerHTML = `
+                        <td class="py-4 px-6">
+                            <p class="font-bold text-slate-800 text-base mb-1">${product.name}</p>
+                            <span class="inline-block px-2.5 py-0.5 rounded-md text-xs font-medium ${catColor}">${product.category}</span>
+                        </td>
+                        <td class="py-4 px-6 font-semibold text-slate-700">
+                            ${formatRupiah(product.price)}
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            <div class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold border ${stockColor}">
+                                ${stockIcon} ${product.stock} Unit
+                            </div>
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onclick="editProduct(${product.id})" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center" title="Edit Harga">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="deleteProduct(${product.id})" class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-colors flex items-center justify-center" title="Hapus">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        };
+
+        // Form Submit Handler (Tambah Produk)
+        document.getElementById('product-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newProduct = {
+                id: Date.now(), // generate ID unik pakai timestamp
+                name: document.getElementById('p-name').value,
+                category: document.getElementById('p-category').value,
+                price: parseInt(document.getElementById('p-price').value),
+                stock: parseInt(document.getElementById('p-stock').value)
+            };
+            products.unshift(newProduct); // Tambahkan ke urutan paling atas array
+            this.reset(); // Kosongkan form
+            
+            // Otomatis reset filter ke "All" agar produk baru terlihat
+            document.getElementById('filter-category').value = 'All';
+            renderTable();
+        });
+
+        // Fungsi Hapus
+        const deleteProduct = (id) => {
+            if(confirm("Apakah Anda yakin ingin menghapus data produk ini secara permanen?")) {
+                products = products.filter(p => p.id !== id);
+                renderTable();
+            }
+        };
+
+        // Fungsi Edit Harga Sederhana
+        const editProduct = (id) => {
+            const product = products.find(p => p.id === id);
+            const newPrice = prompt(`Update harga untuk "${product.name}"\nHarga saat ini: Rp ${product.price}\n\nMasukkan harga baru (Angka saja):`, product.price);
+            
+            if(newPrice !== null && newPrice.trim() !== "" && !isNaN(newPrice)) {
+                product.price = parseInt(newPrice);
+                renderTable();
+            }
+        };
+
+        // Render tabel saat halaman pertama kali dimuat
+        renderTable();
+    </script>
 </body>
 </html>
+
