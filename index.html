@@ -3,10 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman Adit</title>
+    <title>Adit Store - E-Commerce</title>
+    <style>
+        /* Mengatur ulang gaya bawaan browser */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        
+        body { 
+            background-color: #f4f7f6; 
+            color: #333; 
+            line-height: 1.6; 
+        }
+
+        /* Desain Header / Navigasi */
+        header { 
+            background: #2c3e50; 
+            color: #fff; 
+            padding: 1rem 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        header h1 { 
+            font-size: 1.5rem; 
+            letter-spacing: 1px;
+        }
+        
+        .nav-links a { 
+            color: #fff; 
+            text-decoration: none; 
+            margin-left: 20px; 
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #3498db;
+        }
+
+        /* Desain Wadah Utama */
+        .container { 
+            max-width: 1000px; 
+            margin: 3rem auto; 
+            padding: 0 15px; 
+        }
+
+        /* Kotak Produk */
+        .product-wrapper { 
+            display: flex; 
+            flex-wrap: wrap; 
+            background: #fff; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05); 
+        }
+
+        /* Area Gambar Produk */
+        .product-image { 
+            flex: 1; 
+            min-width: 300px; 
+            background: #ecf0f1; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 2rem; 
+        }
+        
+        .product-image img { 
+            max-width: 100%; 
+            border-radius: 8px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Area Detail Produk */
+        .product-details { 
+            flex: 1; 
+            min-width: 300px; 
+            padding: 3rem 2.5rem; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .badge { 
+            background: #e74c3c; 
+            color: #fff; 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 0.75rem; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            align-self: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .product-title { 
+            font-size: 2.2rem; 
+            margin-bottom: 10px; 
+            color: #2c3e50; 
+            line-height: 1.2;
+        }
+        
+        .product-price { 
+            font-size: 1.8rem; 
+            color: #27ae60; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+        }
+        
+        .product-description { 
+            color: #7f8c8d; 
+            margin-bottom: 30px; 
+            font-size: 1rem;
+        }
+
+        /* Tombol Beli */
+        .btn-add { 
+            background: #3498db; 
+            color: #fff; 
+            border: none; 
+            padding: 15px 30px; 
+            font-size: 1.1rem; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            width: 100%; 
+            font-weight: bold; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-add:hover { 
+            background: #2980b9; 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Footer */
+        footer { 
+            text-align: center; 
+            padding: 2rem; 
+            margin-top: 2rem; 
+            color: #95a5a6; 
+            font-size: 0.9rem;
+        }
+
+        /* Responsivitas untuk Layar HP */
+        @media (max-width: 768px) { 
+            .product-wrapper { 
+                flex-direction: column; 
+            } 
+            .product-details {
+                padding: 2rem 1.5rem;
+            }
+            .product-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Hai nama gwah adit</h1>
-    <p>Ini adalah halaman index gw.</p>
+
+    <!-- Bagian Navigasi Atas -->
+    <header>
+        <h1>Adit Store</h1>
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Katalog</a>
+            <a href="#">🛒 (0)</a>
+        </nav>
+    </header>
+
+    <!-- Konten Produk -->
+    <div class="container">
+        <div class="product-wrapper">
+            
+            <!-- Gambar Produk -->
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Sepatu Keren">
+            </div>
+            
+            <!-- Detail & Informasi Penjualan -->
+            <div class="product-details">
+                <span class="badge">Terlaris</span>
+                <h2 class="product-title">Sneakers Urban Red X</h2>
+                <div class="product-price">Rp 750.000</div>
+                <p class="product-description">
+                    Tingkatkan gaya kamu dengan Sneakers Urban Red X. Dibuat dengan material premium yang menjamin kenyamanan maksimal sepanjang hari. Desainnya yang *sporty* cocok untuk nongkrong maupun aktivitas kasual lainnya.
+                </p>
+                <button class="btn-add">Tambah ke Keranjang</button>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Bagian Bawah Halaman -->
+    <footer>
+        <p>&copy; 2026 Halaman Adit. Dibuat sebagai Mockup Penjualan E-Commerce.</p>
+    </footer>
+
 </body>
 </html>
