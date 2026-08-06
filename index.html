@@ -1,1 +1,355 @@
-p
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toko Keren - E-Commerce</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333;
+            --card-bg: #fff;
+            --primary: #6c5ce7;
+            --danger: #ff7675;
+            --success: #00b894;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1e272e;
+            --text-color: #d2dae2;
+            --card-bg: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            transition: 0.3s;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-bar {
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            width: 250px;
+            outline: none;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: 0.2s;
+        }
+
+        .btn-primary { background-color: var(--primary); }
+        .btn-primary:hover { opacity: 0.8; }
+        .btn-danger { background-color: var(--danger); }
+        .btn-success { background-color: var(--success); }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* Modal Styles untuk Keranjang & Pesanan */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .cart-item, .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            animation: slideIn 0.5s forwards, fadeOut 0.5s 4s forwards;
+        }
+
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>TokoKeren 🛒</h2>
+        <input type="text" id="searchInput" class="search-bar" placeholder="Cari barang..." onkeyup="renderProducts()">
+        <div>
+            <button class="btn" style="background:#555" onclick="toggleTheme()">🌙 Mode</button>
+            <button class="btn btn-primary" onclick="openModal('cartModal')">Keranjang (<span id="cartCount">0</span>)</button>
+            <button class="btn btn-success" onclick="openModal('orderModal')">Pesanan Saya</button>
+        </div>
+    </header>
+
+    <div class="container" id="productList">
+        <!-- Produk akan dimuat di sini oleh JavaScript -->
+    </div>
+
+    <!-- Modal Keranjang -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <h3>Keranjang Belanja</h3>
+            <div id="cartItems"></div>
+            <h4>Total: Rp <span id="cartTotal">0</span></h4>
+            
+            <label>Pilih Metode Pembayaran:</label>
+            <select id="paymentMethod">
+                <option value="Transfer Bank (BCA/Mandiri)">Transfer Bank (BCA/Mandiri/BNI)</option>
+                <option value="E-Wallet (GoPay/OVO/Dana)">E-Wallet (GoPay/OVO/Dana)</option>
+                <option value="Kartu Kredit">Kartu Kredit / Debit</option>
+                <option value="COD">Cash on Delivery (COD)</option>
+            </select>
+
+            <button class="btn btn-success" style="width: 100%;" onclick="checkout()">Pesan Sekarang</button>
+            <button class="btn btn-danger" style="width: 100%; margin-top: 10px;" onclick="closeModal('cartModal')">Tutup</button>
+        </div>
+    </div>
+
+    <!-- Modal Pesanan -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <h3>Pesanan Saya</h3>
+            <div id="orderItems">Belum ada pesanan.</div>
+            <button class="btn btn-danger" style="width: 100%; margin-top: 15px;" onclick="closeModal('orderModal')">Tutup</button>
+        </div>
+    </div>
+
+    <!-- Container Notifikasi -->
+    <div id="toast-container"></div>
+
+    <script>
+        // Data Produk
+        const products = [
+            { id: 1, name: "Sepatu Sneakers", price: 250000, img: "👟" },
+            { id: 2, name: "Kemeja Flanel", price: 150000, img: "👕" },
+            { id: 3, name: "Jam Tangan Pria", price: 300000, img: "⌚" },
+            { id: 4, name: "Tas Ransel", price: 200000, img: "🎒" },
+            { id: 5, name: "Kacamata Hitam", price: 750000, img: "🕶️" },
+            { id: 6, name: "Topi Baseball", price: 50000, img: "🧢" }
+        ];
+
+        let cart = [];
+        let orders = [];
+
+        // Menampilkan Produk
+        function renderProducts() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+
+            const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchQuery));
+
+            filteredProducts.forEach(p => {
+                productList.innerHTML += `
+                    <div class="product-card">
+                        <div style="font-size: 50px;">${p.img}</div>
+                        <h3>${p.name}</h3>
+                        <p>Rp ${p.price.toLocaleString('id-ID')}</p>
+                        <button class="btn btn-primary" onclick="addToCart(${p.id})">Tambah ke Keranjang</button>
+                    </div>
+                `;
+            });
+        }
+
+        // Fitur 1: Menambah Barang ke Keranjang
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            cart.push(product);
+            updateCart();
+            showToast(`${product.name} ditambahkan ke keranjang!`);
+        }
+
+        // Fitur 3: Membatalkan Barang di Keranjang
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function updateCart() {
+            document.getElementById('cartCount').innerText = cart.length;
+            const cartItems = document.getElementById('cartItems');
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                cartItems.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.img} ${item.name}</span>
+                        <div>
+                            <span>Rp ${item.price.toLocaleString('id-ID')}</span>
+                            <button class="btn btn-danger" style="padding: 3px 8px; margin-left: 10px;" onclick="removeFromCart(${index})">Batal</button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('cartTotal').innerText = total.toLocaleString('id-ID');
+        }
+
+        // Fitur 4: Memesan Barang (Checkout)
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Keranjang masih kosong!");
+                return;
+            }
+
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const newOrder = {
+                id: Date.now(),
+                items: [...cart],
+                payment: paymentMethod,
+                status: 'Diproses'
+            };
+
+            orders.push(newOrder);
+            cart = []; // Kosongkan keranjang
+            updateCart();
+            closeModal('cartModal');
+            updateOrders();
+            
+            showToast(`Pesanan berhasil dibuat! Metode: ${paymentMethod}`);
+
+            // Simulasi Pemberitahuan Barang Dikirim (Fitur 4)
+            setTimeout(() => {
+                const orderToUpdate = orders.find(o => o.id === newOrder.id);
+                if (orderToUpdate && orderToUpdate.status === 'Diproses') {
+                    orderToUpdate.status = 'Dikirim';
+                    updateOrders();
+                    showToast(`🚚 Hore! Pesanan Anda (ID: ${newOrder.id.toString().slice(-4)}) sedang dikirim!`, true);
+                }
+            }, 8000); // Barang akan berstatus dikirim setelah 8 detik
+        }
+
+        // Menampilkan Riwayat Pesanan
+        function updateOrders() {
+            const orderContainer = document.getElementById('orderItems');
+            orderContainer.innerHTML = '';
+
+            if (orders.length === 0) {
+                orderContainer.innerHTML = 'Belum ada pesanan.';
+                return;
+            }
+
+            orders.forEach(order => {
+                let itemsList = order.items.map(i => i.name).join(', ');
+                orderContainer.innerHTML += `
+                    <div class="order-item" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                        <div><strong>ID Pesanan:</strong> ${order.id.toString().slice(-4)}</div>
+                        <div><strong>Barang:</strong> ${itemsList}</div>
+                        <div><strong>Pembayaran:</strong> ${order.payment}</div>
+                        <div><strong>Status:</strong> <span style="color:${order.status === 'Dikirim' ? 'var(--success)' : 'orange'}">${order.status}</span></div>
+                        
+                        <!-- Fitur 5: Membatalkan barang yang dipesan (hanya jika masih diproses) -->
+                        ${order.status === 'Diproses' ? `<button class="btn btn-danger" onclick="cancelOrder(${order.id})">Batalkan Pesanan</button>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        // Fitur 5: Membatalkan Pesanan
+        function cancelOrder(orderId) {
+            orders = orders.filter(o => o.id !== orderId);
+            updateOrders();
+            showToast("Pesanan berhasil dibatalkan.");
+        }
+
+        // UI Helpers (Modal, Toast, Theme)
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        function showToast(message, isSuccess = false) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if (isSuccess) toast.style.backgroundColor = 'var(--success)';
+            toast.innerText = message;
+            document.getElementById('toast-container').appendChild(toast);
+            setTimeout(() => toast.remove(), 4500);
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.dataset.theme = body.dataset.theme === 'dark' ? 'light' : 'dark';
+        }
+
+        // Inisialisasi awal
+        renderProducts();
+    </script>
+</body>
+</html>
