@@ -3,26 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - E-Commerce Kita</title>
+    <title>Admin Dashboard - Modern</title>
     <style>
         /* Base Reset & Variables */
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --sidebar-bg: #1e293b;
-            --bg-color: #f3f4f6;
-            --text-dark: #111827;
-            --text-gray: #6b7280;
-            --border-color: #e5e7eb;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-gray: #64748b;
+            --border-color: #e2e8f0;
             --success: #10b981;
             --warning: #f59e0b;
+            --danger: #ef4444;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         body {
@@ -30,45 +33,64 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
+            color: var(--text-dark);
         }
 
-        /* Sidebar */
+        /* Sidebar Styling */
         .sidebar {
-            width: 250px;
+            width: 260px;
             background-color: var(--sidebar-bg);
-            color: white;
+            color: #f1f5f9;
             display: flex;
             flex-direction: column;
+            transition: all 0.3s ease;
+            z-index: 100;
         }
 
         .sidebar-header {
-            padding: 20px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            padding: 24px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 1px;
             border-bottom: 1px solid #334155;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
+        .sidebar-header span { color: var(--primary); }
 
         .nav-links {
             list-style: none;
-            padding: 10px 0;
+            padding: 15px 0;
+            flex: 1;
         }
 
         .nav-links li {
-            padding: 12px 20px;
+            padding: 15px 25px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
             border-left: 4px solid transparent;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .nav-links li:hover {
-            background-color: #334155;
-        }
+        .nav-links li:hover { background-color: var(--sidebar-hover); }
 
         .nav-links li.active {
-            background-color: #334155;
+            background-color: var(--sidebar-hover);
             border-left-color: var(--primary);
+            color: white;
         }
+
+        .logout-btn {
+            margin-top: auto;
+            border-left-color: transparent !important;
+            color: #fca5a5;
+        }
+        .logout-btn:hover { background-color: rgba(239, 68, 68, 0.1) !important; color: #ef4444; }
 
         /* Main Content */
         .main-content {
@@ -76,155 +98,162 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            position: relative;
         }
 
+        /* Topbar */
         .topbar {
-            background-color: white;
-            padding: 15px 30px;
+            background-color: var(--card-bg);
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 40;
         }
 
-        .content-area {
-            padding: 30px;
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dark);
+            margin-right: 15px;
         }
 
-        /* Section Visibility */
-        .section { display: none; }
+        .topbar-left { display: flex; align-items: center; }
+        .admin-profile { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .avatar { width: 35px; height: 35px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        /* Content Area */
+        .content-area { padding: 25px; }
+
+        .section { display: none; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
 
-        /* Typography & Layout */
-        .page-title {
-            font-size: 1.5rem;
-            color: var(--text-dark);
-            margin-bottom: 20px;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        .page-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; color: #1e293b; }
+
+        /* Cards & Stats */
         .card {
-            background: white;
-            border-radius: 8px;
+            background: var(--card-bg);
+            border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
         }
 
-        /* Stats Grid (Fitur Tambahan) */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .stat-card {
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border-bottom: 4px solid var(--primary);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--primary);
+            transition: transform 0.2s;
         }
-        
-        .stat-card h3 { color: var(--text-gray); font-size: 0.9rem; margin-bottom: 5px; }
-        .stat-card p { color: var(--text-dark); font-size: 1.5rem; font-weight: bold; }
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-card.success { border-left-color: var(--success); }
+        .stat-card.warning { border-left-color: var(--warning); }
+        .stat-card h3 { color: var(--text-gray); font-size: 0.875rem; margin-bottom: 8px; font-weight: 500; }
+        .stat-card p { font-size: 1.5rem; font-weight: 700; color: var(--text-dark); }
 
         /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            background-color: #f9fafb;
-            color: var(--text-gray);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { background-color: #f8fafc; color: var(--text-gray); font-weight: 600; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        tbody tr { transition: background 0.2s; }
+        tbody tr:hover { background-color: #f1f5f9; }
 
         /* Buttons & Badges */
         .btn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.875rem;
-            color: white;
-            transition: 0.2s;
+            padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 0.875rem; transition: 0.2s;
         }
-
-        .btn-primary { background-color: var(--primary); }
-        .btn-primary:hover { background-color: var(--primary-hover); }
-        .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); box-shadow: 0 4px 6px -1px rgba(59,130,246,0.3); }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
         
-        .badge {
-            padding: 4px 8px;
-            border-radius: 999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+        .badge { padding: 5px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
         .badge-success { background-color: #d1fae5; color: #065f46; }
         .badge-warning { background-color: #fef3c7; color: #92400e; }
+        .badge-danger { background-color: #fee2e2; color: #991b1b; }
 
-        /* Modal / Form Input */
+        /* Form Inputs */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 0.875rem; font-weight: 500; color: var(--text-dark); }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 10px 15px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; transition: border 0.2s;
+        }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+
+        .filter-row { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
+
+        /* Modal Overlay */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
         }
         .modal-overlay.active { display: flex; }
+        .modal { background: var(--card-bg); padding: 30px; border-radius: 16px; width: 90%; max-width: 450px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
 
-        .modal {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 400px;
+        /* Responsive Mobile Styles */
+        .sidebar-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 90; display: none;
         }
 
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-size: 0.875rem; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;
-        }
-
-        /* Laporan Keuangan Filter */
-        .filter-row {
-            display: flex;
-            gap: 15px;
-            align-items: flex-end;
-            margin-bottom: 20px;
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed; left: -260px; height: 100%;
+            }
+            .sidebar.show { left: 0; }
+            .sidebar-overlay.show { display: block; }
+            .menu-toggle { display: block; }
+            .filter-row { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Overlay untuk menu HP -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
     <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <div class="sidebar-header">AdminPanel</div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            Admin<span>Panel</span>
+        </div>
         <ul class="nav-links">
-            <li class="active" onclick="switchMenu('dashboard', this)">Dasbor</li>
-            <li onclick="switchMenu('produk', this)">Manajemen Produk</li>
-            <li onclick="switchMenu('laporan', this)">Laporan Keuangan</li>
-            <li onclick="window.location.href='index.html'" style="margin-top: auto; color: #fca5a5;">Keluar</li>
+            <li class="active" onclick="switchMenu('dashboard', this)">📊 Dasbor</li>
+            <li onclick="switchMenu('produk', this)">📦 Manajemen Produk</li>
+            <li onclick="switchMenu('laporan', this)">📈 Laporan Keuangan</li>
+            <li class="logout-btn" onclick="window.location.href='index.html'">🚪 Keluar</li>
         </ul>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
         <header class="topbar">
-            <div>Selamat datang, <b>Admin</b></div>
-            <div>Mode Administrator</div>
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div style="color: var(--text-gray); font-size: 0.9rem;">Mode Administrator</div>
+            </div>
+            <div class="admin-profile">
+                <div class="avatar">A</div>
+                <span style="display: none; @media(min-width: 480px){display: inline;}">Admin Utama</span>
+            </div>
         </header>
 
         <div class="content-area">
@@ -234,14 +263,14 @@
                 <h2 class="page-title">Ringkasan Sistem</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3>Total Pendapatan Bulan Ini</h3>
+                        <h3>Pendapatan Bulan Ini</h3>
                         <p>Rp 15.450.000</p>
                     </div>
-                    <div class="stat-card" style="border-bottom-color: var(--success);">
+                    <div class="stat-card success">
                         <h3>Pesanan Selesai</h3>
                         <p>142 Pesanan</p>
                     </div>
-                    <div class="stat-card" style="border-bottom-color: var(--warning);">
+                    <div class="stat-card warning">
                         <h3>Stok Menipis</h3>
                         <p>3 Produk</p>
                     </div>
@@ -250,27 +279,29 @@
 
             <!-- SECTION: MANAJEMEN PRODUK -->
             <div id="produk" class="section">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                     <h2 class="page-title" style="margin: 0;">Daftar Produk</h2>
                     <button class="btn btn-primary" onclick="openModal('add')">+ Tambah Barang</button>
                 </div>
                 
                 <div class="card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nama Barang</th>
-                                <th>Harga</th>
-                                <th>Stok</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productTableBody">
-                            <!-- Data akan dimuat melalui JavaScript -->
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nama Barang</th>
+                                    <th>Harga</th>
+                                    <th>Stok</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productTableBody">
+                                <!-- Data dimuat oleh JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -279,32 +310,23 @@
                 <h2 class="page-title">Laporan Keuangan</h2>
                 <div class="card">
                     <div class="filter-row">
-                        <div class="form-group" style="margin: 0;">
+                        <div class="form-group" style="margin: 0; flex: 1;">
                             <label>Tanggal Awal</label>
                             <input type="date" id="startDate">
                         </div>
-                        <div class="form-group" style="margin: 0;">
+                        <div class="form-group" style="margin: 0; flex: 1;">
                             <label>Tanggal Akhir</label>
                             <input type="date" id="endDate">
                         </div>
-                        <button class="btn btn-primary" onclick="generateReport()">Filter Laporan</button>
+                        <button class="btn btn-primary" style="height: 42px;" onclick="generateReport()">Filter</button>
                     </div>
                     
-                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
-                    
-                    <div id="reportResult" style="display: none;">
-                        <h3>Ringkasan Penjualan</h3>
-                        <br>
-                        <table style="width: 50%;">
-                            <tr>
-                                <td style="padding: 5px 0;">Total Transaksi:</td>
-                                <td style="padding: 5px 0; font-weight: bold;">24 Transaksi</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 5px 0;">Total Pendapatan:</td>
-                                <td style="padding: 5px 0; font-weight: bold; color: var(--success);">Rp 4.500.000</td>
-                            </tr>
-                        </table>
+                    <div id="reportResult" style="display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                        <h3 style="margin-bottom: 15px;">Ringkasan Penjualan</h3>
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 8px;">
+                            <p style="margin-bottom: 10px; color: var(--text-gray);">Total Transaksi: <strong style="color: var(--text-dark); float: right;">24 Transaksi</strong></p>
+                            <p style="color: var(--text-gray);">Total Pendapatan: <strong style="color: var(--success); font-size: 1.2rem; float: right;">Rp 4.500.000</strong></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -312,49 +334,56 @@
         </div>
     </main>
 
-    <!-- Modal Form (Untuk Tambah/Edit Produk) -->
+    <!-- Modal Form (Tambah/Edit) -->
     <div class="modal-overlay" id="productModal">
         <div class="modal">
-            <h3 id="modalTitle" style="margin-bottom: 15px;">Tambah Barang</h3>
+            <h3 id="modalTitle" style="margin-bottom: 20px; font-size: 1.25rem;">Tambah Barang</h3>
             <form id="productForm">
                 <input type="hidden" id="formAction">
                 <input type="hidden" id="editId">
                 
                 <div class="form-group">
                     <label>Nama Barang</label>
-                    <input type="text" id="namaBarang" required>
+                    <input type="text" id="namaBarang" required placeholder="Contoh: Sepatu Sneakers">
                 </div>
                 <div class="form-group">
                     <label>Harga (Rp)</label>
-                    <input type="number" id="hargaBarang" required>
+                    <input type="number" id="hargaBarang" required placeholder="Contoh: 150000">
                 </div>
                 <div class="form-group">
                     <label>Stok</label>
-                    <input type="number" id="stokBarang" required>
+                    <input type="number" id="stokBarang" required placeholder="Masukkan jumlah stok">
                 </div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <div style="display: flex; gap: 10px; margin-top: 25px;">
                     <button type="submit" class="btn btn-primary" style="flex: 1;">Simpan</button>
-                    <button type="button" class="btn" style="flex: 1; background: #e5e7eb; color: #374151;" onclick="closeModal()">Batal</button>
+                    <button type="button" class="btn" style="flex: 1; background: #e2e8f0; color: #475569;" onclick="closeModal()">Batal</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // --- 1. Logika Navigasi Tab ---
-        function switchMenu(menuId, el) {
-            // Sembunyikan semua section
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            // Hilangkan status active di semua menu
-            document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
-            
-            // Aktifkan section dan menu yang dipilih
-            document.getElementById(menuId).classList.add('active');
-            el.classList.add('active');
+        // Toggle Sidebar untuk Mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
         }
 
-        // --- 2. Logika Manajemen Produk (CRUD Mock) ---
-        // Data awal buatan untuk tampilan
+        // Navigasi Menu Dinamis
+        function switchMenu(menuId, el) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
+            
+            document.getElementById(menuId).classList.add('active');
+            el.classList.add('active');
+
+            // Tutup sidebar di versi mobile setelah klik menu
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        }
+
+        // Data Produk Dummy
         let products = [
             { id: 1, nama: 'Kemeja Polos Hitam', harga: 120000, stok: 45 },
             { id: 2, nama: 'Sepatu Sneakers Pria', harga: 250000, stok: 8 },
@@ -367,33 +396,31 @@
 
         function renderProducts() {
             const tbody = document.getElementById('productTableBody');
-            tbody.innerHTML = ''; // Bersihkan tabel
+            tbody.innerHTML = ''; 
 
-            products.forEach((prod, index) => {
+            products.forEach((prod) => {
                 let statusBadge = '';
                 if (prod.stok > 10) statusBadge = '<span class="badge badge-success">Aman</span>';
                 else if (prod.stok > 0) statusBadge = '<span class="badge badge-warning">Menipis</span>';
-                else statusBadge = '<span class="badge" style="background:#fee2e2; color:#991b1b">Habis</span>';
+                else statusBadge = '<span class="badge badge-danger">Habis</span>';
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>#PRD-00${prod.id}</td>
-                    <td>${prod.nama}</td>
+                    <td style="color: var(--text-gray); font-weight: 500;">#PRD-00${prod.id}</td>
+                    <td style="font-weight: 500;">${prod.nama}</td>
                     <td>${formatRupiah(prod.harga)}</td>
-                    <td>${prod.stok}</td>
+                    <td>${prod.stok} pcs</td>
                     <td>${statusBadge}</td>
                     <td>
-                        <button class="btn btn-sm btn-primary" onclick="openModal('edit', ${prod.id})">Edit / View</button>
+                        <button class="btn btn-sm btn-primary" onclick="openModal('edit', ${prod.id})">Edit</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
-
-        // Jalankan saat halaman pertama kali dimuat
         renderProducts();
 
-        // --- 3. Logika Modal Tambah & Edit ---
+        // Logika Modal
         function openModal(action, id = null) {
             const modal = document.getElementById('productModal');
             const formAction = document.getElementById('formAction');
@@ -403,17 +430,15 @@
                 document.getElementById('productForm').reset();
                 formAction.value = 'add';
             } else if (action === 'edit') {
-                document.getElementById('modalTitle').innerText = 'Detail / Edit Barang';
+                document.getElementById('modalTitle').innerText = 'Edit Barang';
                 formAction.value = 'edit';
                 
-                // Cari produk berdasarkan ID
                 const prod = products.find(p => p.id === id);
                 document.getElementById('editId').value = prod.id;
                 document.getElementById('namaBarang').value = prod.nama;
                 document.getElementById('hargaBarang').value = prod.harga;
                 document.getElementById('stokBarang').value = prod.stok;
             }
-            
             modal.classList.add('active');
         }
 
@@ -421,7 +446,7 @@
             document.getElementById('productModal').classList.remove('active');
         }
 
-        // Handle Submit Form Produk
+        // Handle Submit Form
         document.getElementById('productForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const action = document.getElementById('formAction').value;
@@ -432,39 +457,26 @@
             if (action === 'add') {
                 const newId = products.length > 0 ? products[products.length - 1].id + 1 : 1;
                 products.push({ id: newId, nama, harga, stok });
-                alert('Barang berhasil ditambahkan!');
+                alert('Berhasil: Barang baru ditambahkan!');
             } else if (action === 'edit') {
                 const id = parseInt(document.getElementById('editId').value);
                 const index = products.findIndex(p => p.id === id);
                 products[index] = { id, nama, harga, stok };
-                alert('Detail barang berhasil diperbarui!');
+                alert('Berhasil: Data barang diperbarui!');
             }
-
             closeModal();
             renderProducts();
         });
 
-        // --- 4. Logika Laporan Keuangan ---
+        // Filter Laporan
         function generateReport() {
             const start = document.getElementById('startDate').value;
             const end = document.getElementById('endDate').value;
-
             if (!start || !end) {
-                alert('Harap pilih Tanggal Awal dan Tanggal Akhir terlebih dahulu!');
+                alert('Pilih tanggal awal dan akhir terlebih dahulu!');
                 return;
             }
-
-            if (start > end) {
-                alert('Tanggal Awal tidak boleh lebih besar dari Tanggal Akhir!');
-                return;
-            }
-
-            // Simulasi loading/menampilkan hasil
-            const resultDiv = document.getElementById('reportResult');
-            resultDiv.style.display = 'block';
-            
-            // Di sistem nyata, bagian ini akan melakukan Fetch/AJAX ke database
-            // Ini sekadar memberikan efek seolah data telah di-filter berdasarkan tanggal
+            document.getElementById('reportResult').style.display = 'block';
         }
     </script>
 </body>
