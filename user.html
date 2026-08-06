@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Kita - Belanja Puas</title>
+    <style>
+        /* Base Reset & Variables */
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --text-dark: #0f172a;
+            --text-gray: #64748b;
+            --border: #e2e8f0;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--white);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+        }
+        .search-bar input {
+            width: 100%; padding: 10px 15px;
+            border-radius: 99px; border: 1px solid var(--border);
+            outline: none; background: var(--bg-color);
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 8px 15px;
+            background: var(--bg-color);
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .cart-badge {
+            position: absolute; top: -5px; right: -5px;
+            background: #ef4444; color: white;
+            font-size: 0.75rem; padding: 2px 6px;
+            border-radius: 99px; display: none;
+        }
+
+        /* Main Content */
+        .container { padding: 30px 5%; }
+        
+        .category-chips {
+            display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto;
+        }
+        .chip {
+            padding: 8px 16px; background: var(--white);
+            border: 1px solid var(--border); border-radius: 99px;
+            font-size: 0.875rem; cursor: pointer; white-space: nowrap;
+        }
+        .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        
+        .product-img {
+            width: 100%; height: 180px; background: #e2e8f0;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-gray);
+        }
+        
+        .product-info { padding: 15px; }
+        .product-title { font-size: 1rem; margin-bottom: 5px; font-weight: 600; }
+        .product-price { color: var(--primary); font-weight: 700; margin-bottom: 15px; }
+        
+        .btn-add {
+            width: 100%; padding: 10px;
+            background: var(--primary); color: white;
+            border: none; border-radius: 6px;
+            font-weight: 600; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-add:hover { background: var(--primary-hover); }
+
+        /* Cart Drawer (Samping) */
+        .cart-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 99;
+            opacity: 0; visibility: hidden; transition: 0.3s;
+        }
+        .cart-overlay.active { opacity: 1; visibility: visible; }
+
+        .cart-drawer {
+            position: fixed; top: 0; right: -400px;
+            width: 100%; max-width: 400px; height: 100%;
+            background: var(--white); z-index: 100;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: 0.3s ease-in-out;
+            display: flex; flex-direction: column;
+        }
+        .cart-drawer.active { right: 0; }
+
+        .cart-header {
+            padding: 20px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .close-cart { cursor: pointer; font-size: 1.5rem; font-weight: bold; }
+
+        .cart-items { flex: 1; overflow-y: auto; padding: 20px; }
+        
+        .cart-item {
+            display: flex; justify-content: space-between;
+            margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border);
+        }
+        .cart-item-title { font-weight: 600; font-size: 0.9rem; }
+        .cart-item-price { color: var(--text-gray); font-size: 0.85rem; }
+
+        .cart-footer { padding: 20px; border-top: 1px solid var(--border); background: #f9fafb; }
+        
+        /* Form Checkout */
+        .checkout-group { margin-bottom: 15px; }
+        .checkout-group label { display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600;}
+        .checkout-group select {
+            width: 100%; padding: 8px 10px; border-radius: 6px;
+            border: 1px solid var(--border); outline: none;
+        }
+
+        .cart-summary {
+            display: flex; justify-content: space-between;
+            font-size: 1.1rem; font-weight: 700; margin: 15px 0;
+        }
+
+        .btn-checkout {
+            width: 100%; padding: 12px; background: #10b981;
+            color: white; border: none; border-radius: 6px;
+            font-weight: bold; cursor: pointer; font-size: 1rem;
+        }
+        .btn-checkout:hover { background: #059669; }
+
+        /* Toast Notification */
+        .toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; }
+        .toast {
+            background: #111827; color: white;
+            padding: 12px 20px; border-radius: 8px;
+            margin-top: 10px; font-size: 0.9rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            opacity: 0; transform: translateY(20px);
+            animation: slideUp 0.3s forwards, fadeOut 0.3s forwards 2.7s;
+        }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { to { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">E-Commerce</div>
+        <div class="search-bar">
+            <input type="text" placeholder="Cari barang impianmu...">
+        </div>
+        <div class="cart-icon" onclick="toggleCart()">
+            🛒 Keranjang
+            <span class="cart-badge" id="cartBadge">0</span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="category-chips">
+            <div class="chip active">Semua</div>
+            <div class="chip">Pakaian Pria</div>
+            <div class="chip">Sepatu</div>
+            <div class="chip">Aksesoris</div>
+            <div class="chip">Elektronik</div>
+        </div>
+
+        <div class="product-grid" id="productGrid">
+            <!-- Produk akan dirender oleh JavaScript -->
+        </div>
+    </main>
+
+    <!-- Cart Drawer & Overlay -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3>Keranjang Belanja</h3>
+            <div class="close-cart" onclick="toggleCart()">&times;</div>
+        </div>
+        
+        <div class="cart-items" id="cartItems">
+            <p style="text-align:center; color:gray; margin-top: 20px;">Keranjangmu masih kosong.</p>
+        </div>
+
+        <div class="cart-footer">
+            <!-- Fitur Memilih Opsi Pengantaran -->
+            <div class="checkout-group">
+                <label>Opsi Pengantaran</label>
+                <select id="deliveryOption" onchange="calculateTotal()">
+                    <option value="0">Pilih pengantaran...</option>
+                    <option value="15000">Reguler (2-3 Hari) - Rp 15.000</option>
+                    <option value="25000">Next Day (1 Hari) - Rp 25.000</option>
+                    <option value="40000">Instan (Hari ini) - Rp 40.000</option>
+                </select>
+            </div>
+
+            <!-- Fitur Memilih Metode Pembayaran -->
+            <div class="checkout-group">
+                <label>Metode Pembayaran</label>
+                <select id="paymentMethod">
+                    <option value="transfer">Transfer Bank (BCA/Mandiri)</option>
+                    <option value="ewallet">E-Wallet (GoPay/OVO/Dana)</option>
+                    <option value="cod">Cash on Delivery (COD)</option>
+                </select>
+            </div>
+
+            <div class="cart-summary">
+                <span>Total Bayar</span>
+                <span id="totalPrice">Rp 0</span>
+            </div>
+            <button class="btn-checkout" onclick="processCheckout()">Bayar Sekarang</button>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Data Produk Dummy
+        const products = [
+            { id: 1, name: "Kemeja Polos Hitam", price: 120000 },
+            { id: 2, name: "Sepatu Sneakers Pria", price: 250000 },
+            { id: 3, name: "Jam Tangan Minimalis", price: 180000 },
+            { id: 4, name: "Tas Ransel Kanvas", price: 155000 },
+            { id: 5, name: "Kacamata Hitam Anti UV", price: 85000 },
+            { id: 6, name: "Jaket Denim Vintage", price: 320000 },
+        ];
+
+        let cart = []; // Array untuk menyimpan barang keranjang
+
+        // Format angka ke Rupiah
+        const formatRupiah = (angka) => 'Rp ' + angka.toLocaleString('id-ID');
+
+        // Render Produk ke Halaman
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            products.forEach(prod => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-img">📷 Gambar ${prod.name.split(' ')[0]}</div>
+                    <div class="product-info">
+                        <div class="product-title">${prod.name}</div>
+                        <div class="product-price">${formatRupiah(prod.price)}</div>
+                        <button class="btn-add" onclick="addToCart(${prod.id})">+ Keranjang</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Fitur Tambah ke Keranjang
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+
+            updateCartUI();
+            showToast(`${product.name} berhasil ditambahkan!`);
+        }
+
+        // Update Tampilan Keranjang
+        function updateCartUI() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            const cartBadge = document.getElementById('cartBadge');
+            
+            // Update Badge Angka Keranjang
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            cartBadge.innerText = totalItems;
+            cartBadge.style.display = totalItems > 0 ? 'block' : 'none';
+
+            // Render List Keranjang
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p style="text-align:center; color:gray; margin-top: 20px;">Keranjangmu masih kosong.</p>';
+            } else {
+                cartItemsContainer.innerHTML = '';
+                cart.forEach((item, index) => {
+                    cartItemsContainer.innerHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <div class="cart-item-title">${item.name}</div>
+                                <div class="cart-item-price">${formatRupiah(item.price)} x ${item.qty}</div>
+                            </div>
+                            <div style="font-weight: 600;">
+                                ${formatRupiah(item.price * item.qty)}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            calculateTotal();
+        }
+
+        // Kalkulasi Total Harga + Ongkir
+        function calculateTotal() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const deliveryCost = parseInt(document.getElementById('deliveryOption').value) || 0;
+            
+            const total = subtotal + deliveryCost;
+            
+            if (cart.length === 0) {
+                document.getElementById('totalPrice').innerText = 'Rp 0';
+            } else {
+                document.getElementById('totalPrice').innerText = formatRupiah(total);
+            }
+        }
+
+        // Fitur Checkout
+        function processCheckout() {
+            if (cart.length === 0) {
+                alert('Keranjang belanja masih kosong!');
+                return;
+            }
+
+            const delivery = document.getElementById('deliveryOption').value;
+            if (delivery === "0") {
+                alert('Silakan pilih opsi pengantaran terlebih dahulu!');
+                return;
+            }
+
+            const method = document.getElementById('paymentMethod');
+            const methodName = method.options[method.selectedIndex].text;
+
+            alert(`Pesanan Berhasil Dibuat!\nMetode: ${methodName}\nSilakan selesaikan pembayaran Anda.`);
+            
+            // Kosongkan keranjang setelah checkout sukses
+            cart = [];
+            document.getElementById('deliveryOption').value = "0";
+            updateCartUI();
+            toggleCart();
+        }
+
+        // Buka / Tutup Drawer Keranjang
+        function toggleCart() {
+            document.getElementById('cartDrawer').classList.toggle('active');
+            document.getElementById('cartOverlay').classList.toggle('active');
+        }
+
+        // Fitur Tambahan: Toast Notification UI
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = message;
+            
+            container.appendChild(toast);
+
+            // Hapus elemen toast dari DOM setelah animasi selesai (3 detik)
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Inisialisasi awal
+        renderProducts();
+    </script>
+</body>
+</html>
