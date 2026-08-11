@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - GadgetStore Pro</title>
+    <!-- Font Inter dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- RESET & DASAR --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* Latar belakang abu-abu kebiruan yang lembut */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #334155;
+        }
+
+        /* --- KOTAK LOGIN UTAMA --- */
+        .login-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 700px;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            text-align: center;
+            margin: 20px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header p {
+            font-size: 15px;
+            color: #64748b;
+            margin-bottom: 40px;
+        }
+
+        /* --- KARTU PILIHAN PERAN --- */
+        .role-wrapper {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+        }
+
+        /* Desain untuk Layar HP */
+        @media (max-width: 600px) {
+            .role-wrapper {
+                flex-direction: column;
+            }
+        }
+
+        .role-card {
+            flex: 1;
+            background-color: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Efek Hover (Saat disentuh/kursor diarahkan) */
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Warna Khusus Kartu Admin */
+        .role-card.admin:hover {
+            border-color: #3b82f6;
+            background-color: #f0f9ff;
+        }
+
+        /* Warna Khusus Kartu Pembeli */
+        .role-card.user:hover {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+
+        .role-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .role-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+
+        .role-desc {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        /* Footer Teks */
+        .footer-text {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Selamat Datang di GadgetStore Pro</h1>
+            <p>Silakan pilih peran Anda untuk masuk ke dalam sistem</p>
+        </div>
+
+        <div class="role-wrapper">
+            
+            <!-- KARTU LOGIN SEBAGAI ADMIN -->
+            <!-- Link href mengarah ke index.html (Halaman form admin yang sudah kamu buat) -->
+            <a href="index.html" class="role-card admin">
+                <div class="role-icon">👨‍💻</div>
+                <div class="role-title">Login sebagai Admin</div>
+                <div class="role-desc">Masuk ke panel manajemen untuk menambahkan produk dan mengelola pesanan.</div>
+            </a>
+
+            <!-- KARTU LOGIN SEBAGAI PEMBELI -->
+            <!-- Link href ini nanti bisa diarahkan ke halaman katalog khusus pembeli jika ada -->
+            <a href="#" onclick="alert('Login Pembeli Berhasil! (Ini bisa diarahkan ke halaman katalog nantinya)')" class="role-card user">
+                <div class="role-icon">🛍️</div>
+                <div class="role-title">Login sebagai Pembeli</div>
+                <div class="role-desc">Jelajahi katalog produk terbaru kami, tonton demo, dan mulai berbelanja.</div>
+            </a>
+
+        </div>
+
+        <div class="footer-text">
+            &copy; 2026 GadgetStore Pro. All rights reserved.
+        </div>
+    </div>
+
+</body>
+</html>
