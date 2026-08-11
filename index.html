@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GadgetStore Pro</title>
+    <style>
+        /* Pengaturan Dasar */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background-color: #1e293b;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        /* Layout Utama - Pemisahan Dua Panel */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 0 30px 40px 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Kartu Panel dengan Box-Shadow & Border-Radius */
+        .panel {
+            background-color: white;
+            flex: 1;
+            min-width: 350px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel h2 {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-top: 0;
+            color: #0f172a;
+        }
+
+        /* --- STYLING PANEL ADMIN --- */
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .admin-form label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .admin-form input[type="text"],
+        .admin-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        .admin-form textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .admin-form button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .admin-form button:hover {
+            background-color: #2563eb;
+        }
+
+        /* Styling Status Pesanan */
+        .status-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .status-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .status-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .status-list li:last-child {
+            border-bottom: none;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        .b-unpaid { background-color: #ef4444; }
+        .b-process { background-color: #eab308; }
+        .b-shipped { background-color: #3b82f6; }
+        .b-done { background-color: #22c55e; }
+
+        /* --- STYLING PANEL PEMBELI --- */
+        .katalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .produk-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .produk-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .produk-card h3 {
+            margin: 10px 0 5px 0;
+            font-size: 18px;
+        }
+
+        .produk-card .harga {
+            font-size: 20px;
+            font-weight: 900;
+            color: #16a34a;
+            margin: 5px 0 15px 0;
+        }
+
+        .produk-card .deskripsi {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .produk-card video {
+            width: 100%;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            background-color: #000;
+        }
+
+        .produk-card a.btn-beli {
+            display: block;
+            text-align: center;
+            background-color: #10b981;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .produk-card a.btn-beli:hover {
+            background-color: #059669;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header Sistem -->
+    <header>
+        <h1>GadgetStore Management System</h1>
+    </header>
+
+    <!-- Layout Utama -->
+    <div class="container">
+        
+        <!-- PANEL ADMINISTRATOR -->
+        <section class="panel">
+            <h2>Panel Administrator</h2>
+            
+            <!-- Formulir Inventaris Produk -->
+            <div class="admin-form">
+                <div>
+                    <label>Nama Produk</label>
+                    <input type="text" placeholder="Masukkan nama produk baru...">
+                </div>
+                <div>
+                    <label>Deskripsi & Harga</label>
+                    <textarea placeholder="Masukkan spesifikasi detail dan harga produk..."></textarea>
+                </div>
+                <div>
+                    <label>URL Gambar Produk</label>
+                    <input type="text" placeholder="https://contoh.com/gambar.jpg">
+                </div>
+                <button type="submit">Simpan Produk ke Database</button>
+            </div>
+
+            <!-- Fitur Cek Status Pesanan (Penjual) -->
+            <div class="status-box">
+                <h3>Pantau Status Pesanan (Penjual)</h3>
+                <ul class="status-list">
+                    <li>INV-001 (Smartphone Premium) <span class="badge b-unpaid">Belum Dibayar</span></li>
+                    <li>INV-002 (Laptop Ultra) <span class="badge b-process">Diproses</span></li>
+                    <li>INV-003 (Tablet Pro) <span class="badge b-shipped">Dikirim</span></li>
+                    <li>INV-004 (Smartwatch) <span class="badge b-done">Selesai</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- PANEL PEMBELI -->
+        <section class="panel">
+            <h2>Panel Pembeli (Katalog)</h2>
+            
+            <div class="katalog-grid">
+                <!-- Produk 1 -->
+                <div class="produk-card">
+                    <!-- Tag img -->
+                    <img src="https://images.unsplash.com/photo-1598327105666-5b89351cb315?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Smartphone Premium">
+                    
+                    <!-- Judul & Harga Kontras -->
+                    <h3>Smartphone Premium</h3>
+                    <p class="harga">Rp 12.000.000</p>
+                    
+                    <!-- Deskripsi Singkat -->
+                    <p class="deskripsi">Layar Super AMOLED 120Hz, RAM 12GB, Storage 256GB, Kamera 108MP, Baterai 5000mAh dengan Fast Charging.</p>
+                    
+                    <!-- Tag video interaktif -->
+                    <video controls>
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        Video demo tidak didukung oleh browser Anda.
+                    </video>
+                    
+                    <!-- Tag Hyperlink Aksi Akhir -->
+                    <a href="#checkout" class="btn-beli">Beli Sekarang</a>
+                </div>
+
+                <!-- Produk 2 -->
+                <div class="produk-card">
+                    <!-- Tag img -->
+                    <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Laptop Ultra">
+                    
+                    <!-- Judul & Harga Kontras -->
+                    <h3>Laptop Ultra Edition</h3>
+                    <p class="harga">Rp 21.500.000</p>
+                    
+                    <!-- Deskripsi Singkat -->
+                    <p class="deskripsi">Prosesor M2 Core 16-Thread, RAM 16GB LPDDR5, SSD 1TB NVMe, Layar 14 inch Retina Display, Bobot hanya 1.2kg.</p>
+                    
+                    <!-- Tag video interaktif -->
+                    <video controls>
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        Video demo tidak didukung oleh browser Anda.
+                    </video>
+                    
+                    <!-- Tag Hyperlink Aksi Akhir -->
+                    <a href="#checkout" class="btn-beli">Beli Sekarang</a>
+                </div>
+            </div>
+
+            <!-- Fitur Cek Status Pesanan (Pembeli) -->
+            <div class="status-box">
+                <h3>Lacak Pesanan Saya (Pembeli)</h3>
+                <ul class="status-list">
+                    <li>Order: Laptop Ultra Edition <span class="badge b-shipped">Pesanan Dikirim</span></li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>
