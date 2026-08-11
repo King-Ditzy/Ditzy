@@ -3,26 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GadgetStore Pro - Sistem Terpadu</title>
-    <!-- Font Inter yang Modern -->
+    <title>GadgetStore Pro - Ultimate</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        /* --- CSS VARIABLES (UNTUK DARK MODE) --- */
+        :root {
+            --bg-body: #f8fafc;
+            --bg-panel: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #f8fafc;
+            --shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .dark-mode {
+            --bg-body: #0f172a;
+            --bg-panel: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --input-bg: #0f172a;
+            --shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
         /* --- RESET & GLOBAL --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             line-height: 1.6;
+            padding-bottom: 50px;
         }
 
         /* --- NAVBAR --- */
         #navbar {
             display: none; 
-            background-color: #ffffff;
+            background-color: var(--bg-panel);
             padding: 12px 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -31,105 +52,92 @@
             justify-content: space-between;
             align-items: center;
             gap: 10px;
+            border-bottom: 1px solid var(--border-color);
         }
         .nav-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .nav-brand { font-size: 18px; font-weight: 800; color: #0f172a; }
-        .nav-role-badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-        .btn-logout {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: background 0.3s;
-        }
-        .btn-logout:hover { background-color: #dc2626; }
+        .nav-brand { font-size: 18px; font-weight: 800; }
+        .nav-role-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+        
+        .nav-actions { display: flex; gap: 10px; }
+        .btn-theme { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 5px 10px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap; }
 
         /* --- CONTAINER UTAMA --- */
         .container { max-width: 900px; margin: 25px auto; padding: 0 15px; }
 
         /* --- HALAMAN LOGIN --- */
         #view-login { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; }
-        .login-box {
-            background: white; padding: 30px 20px; border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 450px;
-        }
+        .login-box { background: var(--bg-panel); padding: 30px 20px; border-radius: 20px; box-shadow: var(--shadow); text-align: center; width: 100%; max-width: 450px; border: 1px solid var(--border-color); }
         .login-box h1 { font-weight: 800; font-size: 22px; margin-bottom: 5px; }
-        .login-box p { color: #64748b; font-size: 14px; margin-bottom: 25px; }
-        
+        .login-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
         .role-cards { display: flex; gap: 15px; }
         @media (max-width: 400px) { .role-cards { flex-direction: column; } }
-        
-        .role-card {
-            flex: 1; border: 2px solid #e2e8f0; border-radius: 16px;
-            padding: 20px 10px; cursor: pointer; transition: 0.3s;
-        }
-        .role-card.admin { background-color: #f8fafc; }
-        .role-card.user { background-color: #f8fafc; }
-        .role-card.admin:hover, .role-card.admin:active { border-color: #3b82f6; background-color: #eff6ff; }
-        .role-card.user:hover, .role-card.user:active { border-color: #10b981; background-color: #f0fdf4; }
+        .role-card { flex: 1; border: 2px solid var(--border-color); border-radius: 16px; padding: 20px 10px; cursor: pointer; background-color: var(--input-bg); }
+        .role-card.admin:hover { border-color: #3b82f6; background-color: rgba(59, 130, 246, 0.1); }
+        .role-card.user:hover { border-color: #10b981; background-color: rgba(16, 185, 129, 0.1); }
         .role-icon { font-size: 35px; margin-bottom: 5px; }
-        .role-title { font-weight: 700; font-size: 15px; color: #1e293b; }
+        .role-title { font-weight: 700; font-size: 15px; }
 
-        /* --- HALAMAN ADMIN --- */
-        .panel { background: white; padding: 25px 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .panel h2 { font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; color: #0f172a;}
+        /* --- PANEL UMUM --- */
+        .panel { background: var(--bg-panel); padding: 25px 20px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 25px; border: 1px solid var(--border-color); }
+        .panel h2 { font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
         
+        /* --- FORM --- */
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #475569;}
-        .form-control, .file-input {
-            width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 14px;
-        }
+        .form-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: var(--text-muted); }
+        .form-control, .file-input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 14px; background-color: var(--input-bg); color: var(--text-main); }
         .form-control:focus { outline: none; border-color: #3b82f6; }
-        .file-input { background-color: #f8fafc; cursor: pointer; color: #64748b; }
-        
-        .btn-submit {
-            width: 100%; background: #2563eb; color: white; padding: 14px;
-            border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 15px;
-        }
+        .btn-submit { width: 100%; background: #2563eb; color: white; padding: 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 15px; }
+
+        /* --- ADMIN KELOLA PRODUK (NEW) --- */
+        .admin-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 10px; background: var(--input-bg); }
+        .admin-list-info { display: flex; align-items: center; gap: 10px; }
+        .admin-list-img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; }
+        .admin-list-title { font-weight: 600; font-size: 14px; }
+        .btn-delete { background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; }
 
         /* --- HALAMAN PEMBELI --- */
-        .katalog-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
-        }
-        .empty-state { text-align: center; padding: 40px 20px; color: #94a3b8; border: 2px dashed #cbd5e1; border-radius: 12px; grid-column: 1 / -1; font-size: 14px;}
+        .search-bar { width: 100%; padding: 12px 15px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); margin-bottom: 20px; font-size: 14px; outline: none; }
+        .search-bar:focus { border-color: #10b981; }
         
-        .product-card { border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; background: white; display: flex; flex-direction: column; }
-        .product-img { width: 100%; height: 200px; object-fit: cover; background-color: #e2e8f0; display: block; }
+        .katalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); border: 2px dashed var(--border-color); border-radius: 12px; grid-column: 1 / -1; font-size: 14px; }
         
+        .product-card { border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; background: var(--bg-panel); display: flex; flex-direction: column; }
+        .product-img { width: 100%; height: 200px; object-fit: cover; background-color: var(--input-bg); }
         .product-info { padding: 18px; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-name { font-weight: 700; font-size: 18px; margin-bottom: 2px; color: #0f172a; }
-        .product-price { font-weight: 800; color: #16a34a; font-size: 18px; margin-bottom: 12px; }
-        
-        .product-desc { 
-            font-size: 13px; color: #64748b; margin-bottom: 15px; flex-grow: 1; 
-            line-height: 1.5; word-wrap: break-word; 
-        }
-        
+        .product-name { font-weight: 700; font-size: 18px; margin-bottom: 2px; }
+        .product-price { font-weight: 800; color: #10b981; font-size: 18px; margin-bottom: 12px; }
+        .product-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; flex-grow: 1; line-height: 1.5; word-wrap: break-word; }
         .product-video { width: 100%; height: 160px; background: black; border-radius: 8px; margin-bottom: 15px; }
         .btn-buy { display: block; text-align: center; background: #10b981; color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; }
+
+        /* --- TOAST NOTIFICATION (NEW) --- */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: #1e293b; color: white; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; box-shadow: 0 5px 15px rgba(0,0,0,0.2); opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { border-left: 4px solid #10b981; }
+        .toast.error { border-left: 4px solid #ef4444; }
+
     </style>
 </head>
 <body>
 
     <!-- NAVBAR -->
-    <nav id="navbar" style="display: none;">
+    <nav id="navbar">
         <div class="nav-left">
             <div class="nav-brand">GadgetStore</div>
             <div class="nav-role-badge" id="navRoleText">Role</div>
         </div>
-        <button class="btn-logout" onclick="logout()">🔄 Ganti Peran</button>
+        <div class="nav-actions">
+            <!-- Tombol Dark Mode -->
+            <button class="btn-theme" onclick="toggleTheme()">🌙</button>
+            <button class="btn-logout" onclick="logout()">🔄 Peran</button>
+        </div>
     </nav>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container"></div>
 
     <div class="container">
         
@@ -153,6 +161,7 @@
 
         <!-- ==================== VIEW 2: ADMIN ==================== -->
         <div id="view-admin" style="display: none;">
+            <!-- Form Tambah Produk -->
             <div class="panel">
                 <h2>⚙️ Tambah Produk Baru</h2>
                 <form id="adminForm">
@@ -168,7 +177,6 @@
                         <label>Spesifikasi / Deskripsi</label>
                         <textarea id="prodDesc" class="form-control" rows="3" required placeholder="Detail produk..."></textarea>
                     </div>
-                    
                     <div class="form-group">
                         <label>📸 Upload Foto Produk</label>
                         <input type="file" id="prodImg" class="file-input" accept="image/png, image/jpeg, image/jpg, image/webp" required>
@@ -177,9 +185,16 @@
                         <label>🎥 Upload Video Demo</label>
                         <input type="file" id="prodVid" class="file-input" accept="video/mp4, video/webm, video/ogg" required>
                     </div>
-                    
                     <button type="submit" class="btn-submit">Simpan & Publikasikan</button>
                 </form>
+            </div>
+
+            <!-- Panel Kelola Produk (Bisa Hapus) -->
+            <div class="panel">
+                <h2>📦 Kelola Produk Terunggah</h2>
+                <div id="adminProductList">
+                    <!-- List produk yang bisa dihapus muncul di sini -->
+                </div>
             </div>
         </div>
 
@@ -187,6 +202,9 @@
         <div id="view-user" style="display: none;">
             <div class="panel">
                 <h2>🛍️ Katalog Gadget Terbaru</h2>
+                <!-- Fitur Live Search -->
+                <input type="text" id="searchBar" class="search-bar" placeholder="🔍 Cari nama HP atau Laptop..." oninput="renderKatalog()">
+                
                 <div class="katalog-grid" id="katalogGrid">
                     <!-- Produk muncul di sini -->
                 </div>
@@ -199,6 +217,41 @@
     <script>
         let dataProduk = [];
 
+        // --- FITUR TOAST NOTIFICATION ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerText = message;
+            
+            container.appendChild(toast);
+            
+            // Animasi masuk
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Hilang otomatis setelah 3 detik
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- FITUR DARK MODE ---
+        let isDarkMode = false;
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.querySelector('.btn-theme');
+            isDarkMode = !isDarkMode;
+            
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+                btn.innerText = '☀️';
+            } else {
+                body.classList.remove('dark-mode');
+                btn.innerText = '🌙';
+            }
+        }
+
         function showView(viewId) {
             document.getElementById('view-login').style.display = 'none';
             document.getElementById('view-admin').style.display = 'none';
@@ -206,33 +259,33 @@
             document.getElementById(viewId).style.display = 'block';
         }
 
-        // --- FITUR LOGIN PASSWORD ---
+        // --- LOGIKA LOGIN (TETAP PAKAI PASSWORD admin123) ---
         function login(role) {
             const badge = document.getElementById('navRoleText');
             
             if (role === 'admin') {
-                // Munculkan pop-up minta password
                 const password = prompt("Masukkan Password Admin:");
-                
-                // Cek apakah password benar
                 if (password === "admin123") {
                     document.getElementById('navbar').style.display = 'flex';
                     badge.innerText = "Mode: Admin";
                     badge.style.backgroundColor = "#dbeafe";
                     badge.style.color = "#1e40af";
                     showView('view-admin');
-                } else if (password !== null) { // Jika user tidak klik Cancel
-                    alert("⚠️ Password salah! Anda tidak diizinkan masuk.");
+                    renderAdminList(); // Tampilkan list kelola produk
+                    showToast("Login Admin Berhasil!");
+                } else if (password !== null) {
+                    showToast("Password Salah!", "error");
                 }
             } 
             else if (role === 'user') {
-                // Pembeli tidak butuh password
                 document.getElementById('navbar').style.display = 'flex';
                 badge.innerText = "Mode: Pembeli";
                 badge.style.backgroundColor = "#dcfce7";
                 badge.style.color = "#166534";
+                document.getElementById('searchBar').value = ''; // Reset search
                 showView('view-user');
                 renderKatalog();
+                showToast("Selamat Datang di Katalog!");
             }
         }
 
@@ -250,9 +303,9 @@
             });
         }
 
+        // --- LOGIKA TAMBAH PRODUK ---
         document.getElementById('adminForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-
             const submitBtn = this.querySelector('.btn-submit');
             submitBtn.innerText = "Memproses...";
             submitBtn.disabled = true;
@@ -261,7 +314,6 @@
                 const name = document.getElementById('prodName').value;
                 const price = document.getElementById('prodPrice').value;
                 const desc = document.getElementById('prodDesc').value;
-                
                 const imgFile = document.getElementById('prodImg').files[0];
                 const vidFile = document.getElementById('prodVid').files[0];
 
@@ -269,6 +321,7 @@
                 const vidURL = URL.createObjectURL(vidFile);
 
                 dataProduk.push({
+                    id: Date.now(), // ID unik untuk fitur hapus
                     nama: name,
                     harga: price,
                     deskripsi: desc,
@@ -278,30 +331,68 @@
                 });
 
                 document.getElementById('adminForm').reset();
-                alert('Berhasil! Produk sudah ditambahkan ke Katalog Pembeli.');
+                renderAdminList(); // Update list di bawah form
+                showToast('Produk Berhasil Ditambahkan!');
             } catch (error) {
-                alert('Terjadi kesalahan saat mengunggah file. Pastikan format gambar benar (JPG/PNG).');
+                showToast('Gagal memproses file.', 'error');
             } finally {
                 submitBtn.innerText = "Simpan & Publikasikan";
                 submitBtn.disabled = false;
             }
         });
 
-        function renderKatalog() {
-            const grid = document.getElementById('katalogGrid');
-            grid.innerHTML = '';
+        // --- FITUR HAPUS PRODUK (ADMIN) ---
+        function deleteProduct(id) {
+            if(confirm("Yakin ingin membatalkan dan menghapus produk ini?")) {
+                // Filter array untuk membuang produk dengan ID tersebut
+                dataProduk = dataProduk.filter(produk => produk.id !== id);
+                renderAdminList();
+                showToast("Produk berhasil dihapus", "success");
+            }
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('adminProductList');
+            list.innerHTML = '';
 
             if (dataProduk.length === 0) {
+                list.innerHTML = '<div class="empty-state">Belum ada produk yang diunggah.</div>';
+                return;
+            }
+
+            dataProduk.forEach(function(produk) {
+                const item = document.createElement('div');
+                item.className = 'admin-list-item';
+                item.innerHTML = `
+                    <div class="admin-list-info">
+                        <img src="${produk.gambar}" class="admin-list-img">
+                        <div class="admin-list-title">${produk.nama}</div>
+                    </div>
+                    <button class="btn-delete" onclick="deleteProduct(${produk.id})">🗑️ Hapus</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // --- LOGIKA KATALOG & PENCARIAN (PEMBELI) ---
+        function renderKatalog() {
+            const grid = document.getElementById('katalogGrid');
+            const keyword = document.getElementById('searchBar').value.toLowerCase();
+            grid.innerHTML = '';
+
+            // Filter data berdasarkan ketikan di search bar
+            const filteredData = dataProduk.filter(produk => produk.nama.toLowerCase().includes(keyword));
+
+            if (filteredData.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-state">
-                        🛒 Katalog masih kosong.<br>
-                        Silakan Ganti Peran ke Admin untuk menambahkan produk.
+                        🛒 Tidak menemukan produk yang cocok.
                     </div>
                 `;
                 return;
             }
 
-            dataProduk.forEach(function(produk) {
+            filteredData.forEach(function(produk) {
                 const hargaRupiah = new Intl.NumberFormat('id-ID', {
                     style: 'currency', currency: 'IDR', minimumFractionDigits: 0
                 }).format(produk.harga);
@@ -317,10 +408,9 @@
                         
                         <video controls class="product-video">
                             <source src="${produk.video}" type="${produk.tipeVideo}">
-                            Browser HP kamu tidak mendukung pemutaran video.
                         </video>
                         
-                        <a href="#" class="btn-buy" onclick="alert('Mengarahkan ke pembayaran...')">Beli Sekarang</a>
+                        <button class="btn-buy" onclick="showToast('Mengalihkan ke Pembayaran...')">Beli Sekarang</button>
                     </div>
                 `;
                 grid.appendChild(card);
