@@ -3,330 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GadgetStore Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>GadgetStore Pro - Sistem Terpadu</title>
+    <!-- Font Modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- RESET & DASAR --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        /* --- RESET & GLOBAL STYLES --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
             color: #334155;
-            line-height: 1.5;
-            padding-bottom: 50px;
+            line-height: 1.6;
         }
 
-        /* --- HEADER --- */
-        header {
+        /* --- NAVBAR (Tersembunyi di awal) --- */
+        #navbar {
+            display: none; /* Disembunyikan sampai user login */
             background-color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #e2e8f0;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        header p {
-            font-size: 13px;
-            color: #64748b;
-        }
-
-        /* --- LAYOUT UTAMA --- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-
-        /* --- PANEL UMUM --- */
-        .panel {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            flex: 1;
-            min-width: 320px;
-        }
-
-        .panel-title {
-            font-size: 18px;
-            font-weight: 600;
-            border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-            color: #1e293b;
-        }
-
-        /* --- FORM ADMIN --- */
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
+        .nav-brand { font-size: 20px; font-weight: 800; color: #0f172a; }
+        .nav-role-badge {
+            background-color: #e2e8f0;
+            padding: 5px 12px;
+            border-radius: 20px;
             font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #475569;
+            font-weight: 700;
+            margin-left: 10px;
         }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            background-color: #f8fafc;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #3b82f6;
-            background-color: #ffffff;
-        }
-
-        .file-input {
-            border: 1px dashed #94a3b8;
-            padding: 10px;
-            background-color: #f8fafc;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .btn-submit {
-            width: 100%;
-            background-color: #2563eb;
+        .btn-logout {
+            background-color: #ef4444;
             color: white;
             border: none;
-            padding: 14px;
+            padding: 8px 16px;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 15px;
             cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.2s;
+            transition: 0.3s;
+        }
+        .btn-logout:hover { background-color: #dc2626; }
+
+        /* --- CONTAINER UTAMA --- */
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+
+        /* --- 1. TAMPILAN LOGIN --- */
+        #view-login {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+        .login-box {
+            background: white; padding: 40px; border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            text-align: center; width: 100%; max-width: 600px;
+        }
+        .login-box h1 { font-weight: 800; margin-bottom: 5px; }
+        .login-box p { color: #64748b; margin-bottom: 30px; }
+        
+        .role-cards { display: flex; gap: 20px; }
+        @media (max-width: 500px) { .role-cards { flex-direction: column; } }
+        
+        .role-card {
+            flex: 1; border: 2px solid #e2e8f0; border-radius: 15px;
+            padding: 25px 15px; cursor: pointer; transition: 0.3s;
+        }
+        .role-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .role-card.admin:hover { border-color: #3b82f6; background-color: #f0f9ff; }
+        .role-card.user:hover { border-color: #10b981; background-color: #f0fdf4; }
+        .role-icon { font-size: 40px; margin-bottom: 10px; }
+        .role-title { font-weight: 700; font-size: 16px; }
+
+        /* --- 2. TAMPILAN ADMIN (Form) --- */
+        .panel { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .panel h2 { margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 5px; }
+        .form-control {
+            width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit;
+        }
+        .file-input { border: 1px dashed #94a3b8; padding: 10px; width: 100%; border-radius: 8px; cursor: pointer;}
+        .btn-submit {
+            width: 100%; background: #2563eb; color: white; padding: 14px;
+            border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px;
         }
 
-        .btn-submit:hover {
-            background-color: #1d4ed8;
-        }
-
-        /* --- KATALOG PEMBELI --- */
+        /* --- 3. TAMPILAN PEMBELI (Katalog) --- */
         .katalog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
         }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #94a3b8;
-            font-size: 14px;
-            border: 2px dashed #e2e8f0;
-            border-radius: 8px;
-            grid-column: 1 / -1; /* Mengambil ruang penuh */
-        }
-
-        .product-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .product-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background-color: #f1f5f9;
-        }
-
-        .product-info {
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .product-name {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .product-price {
-            font-size: 18px;
-            font-weight: 700;
-            color: #16a34a;
-            margin-bottom: 10px;
-        }
-
-        .product-desc {
-            font-size: 13px;
-            color: #64748b;
-            margin-bottom: 15px;
-            flex-grow: 1;
-        }
-
-        .product-video {
-            width: 100%;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            background-color: #000;
-            height: 150px;
-        }
-
-        .btn-buy {
-            display: block;
-            text-align: center;
-            background-color: #10b981;
-            color: white;
-            text-decoration: none;
-            padding: 10px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 14px;
-        }
+        .empty-state { text-align: center; padding: 50px; color: #94a3b8; border: 2px dashed #cbd5e1; border-radius: 12px; grid-column: 1 / -1; }
+        
+        .product-card { border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: white; }
+        .product-img { width: 100%; height: 200px; object-fit: cover; }
+        .product-info { padding: 15px; }
+        .product-name { font-weight: 700; font-size: 18px; margin-bottom: 5px; }
+        .product-price { font-weight: 800; color: #16a34a; font-size: 20px; margin-bottom: 10px; }
+        .product-desc { font-size: 13px; color: #64748b; margin-bottom: 15px; }
+        .product-video { width: 100%; height: 160px; background: black; border-radius: 8px; margin-bottom: 15px; }
+        .btn-buy { display: block; text-align: center; background: #10b981; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; }
 
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>GadgetStore Management System</h1>
-        <p>Panel Admin & Katalog Interaktif</p>
-    </header>
+    <!-- NAVBAR: Aktif jika sudah login -->
+    <nav id="navbar" style="display: none;">
+        <div class="nav-brand">
+            GadgetStore <span class="nav-role-badge" id="navRoleText">Role</span>
+        </div>
+        <button class="btn-logout" onclick="logout()">🔄 Ganti Peran</button>
+    </nav>
 
     <div class="container">
         
-        <!-- PANEL ADMIN -->
-        <div class="panel">
-            <h2 class="panel-title">⚙️ Tambah Produk Baru (Admin)</h2>
-            
-            <form id="adminForm">
-                <div class="form-group">
-                    <label>Nama Produk</label>
-                    <input type="text" id="prodName" class="form-control" placeholder="Masukkan nama..." required>
+        <!-- ==================== VIEW 1: HALAMAN LOGIN ==================== -->
+        <div id="view-login">
+            <div class="login-box">
+                <h1>GadgetStore Pro</h1>
+                <p>Silakan pilih peran untuk masuk ke dalam sistem</p>
+                <div class="role-cards">
+                    <div class="role-card admin" onclick="login('admin')">
+                        <div class="role-icon">👨‍💻</div>
+                        <div class="role-title">Admin</div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 5px;">Tambah Produk Baru</div>
+                    </div>
+                    <div class="role-card user" onclick="login('user')">
+                        <div class="role-icon">🛍️</div>
+                        <div class="role-title">Pembeli</div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 5px;">Lihat & Beli Produk</div>
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label>Harga Produk (Angka saja)</label>
-                    <input type="number" id="prodPrice" class="form-control" placeholder="Contoh: 15000000" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Deskripsi Singkat</label>
-                    <textarea id="prodDesc" class="form-control" rows="3" placeholder="Spesifikasi utama..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>📸 Foto Produk</label>
-                    <input type="file" id="prodImg" class="file-input" accept="image/*" required>
-                </div>
-
-                <div class="form-group">
-                    <label>🎥 Video Demo Produk</label>
-                    <input type="file" id="prodVid" class="file-input" accept="video/*" required>
-                </div>
-
-                <button type="submit" class="btn-submit">Tambahkan ke Katalog</button>
-            </form>
+            </div>
         </div>
 
-        <!-- PANEL PEMBELI -->
-        <div class="panel">
-            <h2 class="panel-title">🛍️ Katalog Produk (Pembeli)</h2>
-            
-            <div class="katalog-grid" id="katalogGrid">
-                <!-- Tampilan awal kosong -->
-                <div class="empty-state" id="emptyState">
-                    Belum ada produk yang ditambahkan.<br>
-                    Silakan upload produk melalui Panel Admin di sebelah.
+        <!-- ==================== VIEW 2: HALAMAN ADMIN ==================== -->
+        <div id="view-admin" style="display: none;">
+            <div class="panel">
+                <h2>⚙️ Tambah Produk Baru (Panel Admin)</h2>
+                <form id="adminForm">
+                    <div class="form-group">
+                        <label>Nama Produk</label>
+                        <input type="text" id="prodName" class="form-control" required placeholder="Contoh: iPhone 15 Pro">
+                    </div>
+                    <div class="form-group">
+                        <label>Harga Produk (Angka)</label>
+                        <input type="number" id="prodPrice" class="form-control" required placeholder="Contoh: 20000000">
+                    </div>
+                    <div class="form-group">
+                        <label>Spesifikasi / Deskripsi</label>
+                        <textarea id="prodDesc" class="form-control" rows="3" required placeholder="Masukkan detail produk..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>📸 Upload Foto Produk</label>
+                        <input type="file" id="prodImg" class="file-input" accept="image/*" required>
+                    </div>
+                    <div class="form-group">
+                        <label>🎥 Upload Video Demo</label>
+                        <input type="file" id="prodVid" class="file-input" accept="video/*" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Simpan ke Database Sementara</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== VIEW 3: HALAMAN PEMBELI ==================== -->
+        <div id="view-user" style="display: none;">
+            <div class="panel">
+                <h2>🛍️ Katalog Gadget Terbaru</h2>
+                <div class="katalog-grid" id="katalogGrid">
+                    <!-- Produk akan muncul di sini via JavaScript -->
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- JAVASCRIPT UNTUK MEMBUAT UPLOAD BERFUNGSI -->
+    <!-- JAVASCRIPT: Mengontrol logika Aplikasi -->
     <script>
-        document.getElementById('adminForm').addEventListener('submit', function(event) {
-            // Mencegah web melakukan reload saat tombol ditekan
-            event.preventDefault();
+        // Array untuk menyimpan data produk sementara
+        let dataProduk = [];
 
-            // Mengambil nilai dari form
+        // Fungsi untuk Navigasi (Pindah Halaman/View)
+        function showView(viewId) {
+            // Sembunyikan semua view
+            document.getElementById('view-login').style.display = 'none';
+            document.getElementById('view-admin').style.display = 'none';
+            document.getElementById('view-user').style.display = 'none';
+            
+            // Tampilkan view yang dituju
+            document.getElementById(viewId).style.display = 'block';
+        }
+
+        // Fungsi saat Login dipilih
+        function login(role) {
+            // Tampilkan Navbar
+            document.getElementById('navbar').style.display = 'flex';
+            
+            if (role === 'admin') {
+                document.getElementById('navRoleText').innerText = "Mode: Admin";
+                document.getElementById('navRoleText').style.backgroundColor = "#dbeafe"; // Biru muda
+                document.getElementById('navRoleText').style.color = "#1e40af";
+                showView('view-admin');
+            } 
+            else if (role === 'user') {
+                document.getElementById('navRoleText').innerText = "Mode: Pembeli";
+                document.getElementById('navRoleText').style.backgroundColor = "#dcfce7"; // Hijau muda
+                document.getElementById('navRoleText').style.color = "#166534";
+                showView('view-user');
+                
+                // Tiap kali masuk sebagai user, refresh katalog agar produk baru muncul
+                renderKatalog();
+            }
+        }
+
+        // Fungsi Logout (Kembali ke halaman pilih peran)
+        function logout() {
+            document.getElementById('navbar').style.display = 'none';
+            showView('view-login');
+        }
+
+        // EVENT LISTENER: Saat Admin Submit Form
+        document.getElementById('adminForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Mencegah web reload
+
+            // Ambil data dari form
             const name = document.getElementById('prodName').value;
             const price = document.getElementById('prodPrice').value;
             const desc = document.getElementById('prodDesc').value;
             
-            // Mengambil file gambar dan video yang diupload
+            // Ambil file asli
             const imgFile = document.getElementById('prodImg').files[0];
             const vidFile = document.getElementById('prodVid').files[0];
 
-            // Membuat URL sementara agar file bisa ditampilkan di browser
+            // Buat URL sementara (Blob URL) agar file lokal bisa ditampilkan
             const imgURL = URL.createObjectURL(imgFile);
             const vidURL = URL.createObjectURL(vidFile);
 
-            // Format harga ke dalam Rupiah
-            const formattedPrice = new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0
-            }).format(price);
+            // Masukkan data ke array produk
+            dataProduk.push({
+                nama: name,
+                harga: price,
+                deskripsi: desc,
+                gambar: imgURL,
+                video: vidURL,
+                tipeVideo: vidFile.type
+            });
 
-            // Menghilangkan pesan "Belum ada produk"
-            const emptyState = document.getElementById('emptyState');
-            if (emptyState) {
-                emptyState.style.display = 'none';
+            // Reset form dan beritahu admin
+            document.getElementById('adminForm').reset();
+            alert('Sukses! Produk berhasil ditambahkan. Silakan "Ganti Peran" jadi Pembeli untuk melihat hasilnya.');
+        });
+
+        // FUNGSI UNTUK MENAMPILKAN KATALOG DI HALAMAN PEMBELI
+        function renderKatalog() {
+            const grid = document.getElementById('katalogGrid');
+            grid.innerHTML = ''; // Bersihkan katalog sebelumnya
+
+            // Jika belum ada produk
+            if (dataProduk.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        🛒 Yah, tokonya masih kosong.<br>
+                        Silakan login sebagai Admin terlebih dahulu untuk menambahkan foto & video produk.
+                    </div>
+                `;
+                return;
             }
 
-            // Membuat elemen HTML untuk produk baru
-            const productCard = document.createElement('div');
-            productCard.className = 'product-card';
-            
-            productCard.innerHTML = `
-                <img src="${imgURL}" alt="${name}" class="product-img">
-                <div class="product-info">
-                    <h3 class="product-name">${name}</h3>
-                    <p class="product-price">${formattedPrice}</p>
-                    <p class="product-desc">${desc}</p>
-                    
-                    <video controls class="product-video">
-                        <source src="${vidURL}" type="${vidFile.type}">
-                        Browser tidak mendukung tag video.
-                    </video>
-                    
-                    <a href="#checkout" class="btn-buy" onclick="alert('Lanjut ke pembayaran!')">Beli Sekarang</a>
-                </div>
-            `;
+            // Jika ada produk, loop array dan buat kartu HTML-nya
+            dataProduk.forEach(function(produk) {
+                // Format Harga ke Rupiah
+                const hargaRupiah = new Intl.NumberFormat('id-ID', {
+                    style: 'currency', currency: 'IDR', minimumFractionDigits: 0
+                }).format(produk.harga);
 
-            // Menambahkan produk baru ke dalam katalog
-            document.getElementById('katalogGrid').appendChild(productCard);
-
-            // Membersihkan form setelah berhasil
-            document.getElementById('adminForm').reset();
-            alert('Produk berhasil ditambahkan ke Katalog!');
-        });
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <img src="${produk.gambar}" class="product-img" alt="Foto Produk">
+                    <div class="product-info">
+                        <div class="product-name">${produk.nama}</div>
+                        <div class="product-price">${hargaRupiah}</div>
+                        <div class="product-desc">${produk.deskripsi}</div>
+                        
+                        <video controls class="product-video">
+                            <source src="${produk.video}" type="${produk.tipeVideo}">
+                            Browser tidak mendukung.
+                        </video>
+                        
+                        <a href="#" class="btn-buy" onclick="alert('Pesanan diproses!')">Beli Sekarang</a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
     </script>
 </body>
 </html>
