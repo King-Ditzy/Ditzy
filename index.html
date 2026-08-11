@@ -63,6 +63,7 @@
         
         .badge-container { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
         .product-badge { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); color: white; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; display: inline-block; width: fit-content; }
+        .video-badge { background: rgba(238, 93, 80, 0.9); }
         
         .card-actions-overlay { position: absolute; top: 0; right: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.35); backdrop-filter: blur(3px); display: flex; align-items: center; justify-content: center; gap: 10px; opacity: 0; transition: opacity 0.3s; z-index: 3; }
         .product-img-wrapper:hover .card-actions-overlay { opacity: 1; }
@@ -77,10 +78,17 @@
         .product-rating span { color: var(--text-muted); font-weight: 500; }
         .product-name { font-weight: 800; font-size: 15px; margin-bottom: 5px; line-height: 1.3; }
         .product-price { font-weight: 800; color: var(--primary); font-size: 18px; margin-bottom: 12px; }
+        .price-strike { font-size: 12px; color: var(--text-muted); text-decoration: line-through; margin-right: 6px; font-weight: 500; }
         
         .btn-add-cart { width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; text-align: center; cursor: pointer; border: none; background: var(--input-bg); color: var(--text-main); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-add-cart:hover:not(:disabled) { background: var(--primary); color: white; }
         .btn-add-cart:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* --- ADMIN STAT CARDS --- */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: var(--bg-panel); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; box-shadow: var(--shadow); }
+        .stat-title { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+        .stat-value { font-size: 20px; font-weight: 800; color: var(--text-main); }
 
         /* --- SKELETON LOADING --- */
         .skeleton { background: linear-gradient(-90deg, var(--input-bg) 25%, var(--border-color) 50%, var(--input-bg) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
@@ -126,6 +134,9 @@
         .compare-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .compare-table th, .compare-table td { padding: 10px; border: 1px solid var(--border-color); font-size: 12px; text-align: center; }
         .compare-table th { background: var(--input-bg); font-weight: 800; }
+
+        .tab-btn { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
         /* --- MOBILE RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 768px) {
@@ -196,7 +207,7 @@
                 <p class="text-center" style="color: var(--text-muted); margin-bottom: 30px; font-size:14px;">Platform E-Commerce Ultra Premium</p>
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                     <button class="btn-submit" onclick="login('user')">Mulai Belanja 🛍️</button>
-                    <button class="btn-submit" onclick="login('admin')" style="background: var(--input-bg); color: var(--text-main); border: 2px solid var(--border-color); box-shadow: none;">Login Admin 👨‍💻</button>
+                    <button class="btn-submit" onclick="openAdminAuthModal()" style="background: var(--input-bg); color: var(--text-main); border: 2px solid var(--border-color); box-shadow: none;">Login Admin 👨‍💻</button>
                 </div>
             </div>
         </div>
@@ -231,6 +242,7 @@
                             <option value="asc">Harga Termurah</option>
                             <option value="desc">Harga Termahal</option>
                             <option value="popular">Terpopuler</option>
+                            <option value="rating">Rating Tertinggi</option>
                         </select>
                     </div>
 
@@ -258,6 +270,13 @@
                         <h2 style="font-weight: 800; font-size: 18px;">📦 Pesanan Saya</h2>
                         <button class="btn-submit" style="width: auto; padding:8px 14px; font-size:12px; background: var(--input-bg); color: var(--text-main); box-shadow: none;" onclick="backToKatalog()">Kembali ➔</button>
                     </div>
+                    <!-- Order Filter Tabs -->
+                    <div style="display:flex; gap:8px; margin-bottom:15px; overflow-x:auto;">
+                        <button class="tab-btn active" id="filterUserOrder_All" onclick="filterUserOrders('All')">Semua</button>
+                        <button class="tab-btn" id="filterUserOrder_Diproses" onclick="filterUserOrders('Diproses')">Diproses</button>
+                        <button class="tab-btn" id="filterUserOrder_Dikirim" onclick="filterUserOrders('Dikirim')">Dikirim</button>
+                        <button class="tab-btn" id="filterUserOrder_Selesai" onclick="filterUserOrders('Selesai')">Selesai</button>
+                    </div>
                     <div id="userOrderList"></div>
                 </div>
             </div>
@@ -265,9 +284,31 @@
 
         <!-- VIEW: ADMIN -->
         <div id="view-admin" style="display: none;">
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            
+            <!-- STATS ANALYTICS -->
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Total Omset</div>
+                    <div class="stat-value" id="statRevenue" style="color:var(--success);">Rp 0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Total Pesanan</div>
+                    <div class="stat-value" id="statOrders">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Jumlah Produk</div>
+                    <div class="stat-value" id="statProducts">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Stok Menipis (≤3)</div>
+                    <div class="stat-value" id="statLowStock" style="color:var(--danger);">0</div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap:wrap;">
                 <button class="btn-submit" style="flex:1;" onclick="switchAdminTab('inventaris')">Kelola Produk ⚙️</button>
                 <button class="btn-submit" style="flex:1; background: var(--input-bg); color: var(--text-main); box-shadow: none;" onclick="switchAdminTab('pesanan')">Pesanan Masuk 📋</button>
+                <button class="btn-submit" style="flex:1; background: var(--input-bg); color: var(--text-main); box-shadow: none;" onclick="switchAdminTab('pengaturan')">Pengaturan 🔒</button>
             </div>
             
             <div id="adminTabInventaris">
@@ -282,20 +323,35 @@
                             <option value="Laptop">Laptop</option>
                             <option value="Aksesoris">Aksesoris</option>
                         </select>
-                        <input type="number" id="prodPrice" class="form-control" required placeholder="(Rp) Harga">
+                        <input type="number" id="prodPrice" class="form-control" required placeholder="(Rp) Harga Promo / Jual">
+                        <input type="number" id="prodOriginalPrice" class="form-control" placeholder="(Rp) Harga Awal Coret (Opsional)">
                         <input type="number" id="prodStock" class="form-control" required placeholder="Stok Produk">
                         
-                        <!-- UPLOAD GAMBAR DARI HP ATAL LINK URL -->
+                        <!-- UPLOAD GAMBAR -->
                         <div style="grid-column: 1 / -1; background: var(--input-bg); padding: 15px; border-radius: 12px; border: 1px dashed var(--border-color);">
                             <label style="display:block; font-size:13px; font-weight:700; margin-bottom:8px;">Gambar Produk (Upload dari HP / Link URL)</label>
                             <div style="display:flex; flex-direction:column; gap:10px;">
                                 <input type="file" id="prodImgFile" accept="image/*" class="form-control" onchange="previewLocalImage(event)" style="padding:8px;">
-                                <div style="text-align:center; font-size:12px; color:var(--text-muted);">--- ATAU PASTE LINK URL ---</div>
+                                <div style="text-align:center; font-size:12px; color:var(--text-muted);">--- ATAU PASTE LINK URL GAMBAR ---</div>
                                 <input type="text" id="prodImgUrl" class="form-control" placeholder="https://images.unsplash.com/...">
                             </div>
                             <div id="imgPreviewWrapper" style="margin-top:12px; display:none; text-align:center;">
                                 <span style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">Pratinjau Gambar:</span>
                                 <img id="imgPreview" style="max-height:120px; max-width:100%; border-radius:10px; object-fit:cover; border:1px solid var(--border-color);">
+                            </div>
+                        </div>
+
+                        <!-- UPLOAD VIDEO -->
+                        <div style="grid-column: 1 / -1; background: var(--input-bg); padding: 15px; border-radius: 12px; border: 1px dashed var(--border-color);">
+                            <label style="display:block; font-size:13px; font-weight:700; margin-bottom:8px;">Video Produk (Opsional - MP4 / Link URL)</label>
+                            <div style="display:flex; flex-direction:column; gap:10px;">
+                                <input type="file" id="prodVideoFile" accept="video/mp4,video/webm" class="form-control" onchange="previewLocalVideo(event)" style="padding:8px;">
+                                <div style="text-align:center; font-size:12px; color:var(--text-muted);">--- ATAU PASTE LINK URL VIDEO ---</div>
+                                <input type="text" id="prodVideoUrl" class="form-control" placeholder="https://example.com/video.mp4">
+                            </div>
+                            <div id="videoPreviewWrapper" style="margin-top:12px; display:none; text-align:center;">
+                                <span style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">Pratinjau Video:</span>
+                                <video id="videoPreview" controls style="max-height:150px; max-width:100%; border-radius:10px; border:1px solid var(--border-color); background:black;"></video>
                             </div>
                         </div>
 
@@ -309,7 +365,10 @@
                 </div>
 
                 <div style="background: var(--bg-panel); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border-color);">
-                    <h2 style="margin-bottom: 20px; font-weight:800; font-size:18px;">📦 Database Produk</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+                        <h2 style="font-weight:800; font-size:18px;">📦 Database Produk</h2>
+                        <input type="text" id="adminSearchProd" class="form-control" placeholder="Cari di inventaris... 🔍" oninput="renderAdminInventaris()" style="width:220px;">
+                    </div>
                     <div id="adminProductList" style="display:flex; flex-direction:column; gap:12px;"></div>
                 </div>
             </div>
@@ -325,6 +384,53 @@
                     </div>
                     <div id="adminOrderList" style="display:flex; flex-direction:column; gap:12px;"></div>
                 </div>
+            </div>
+
+            <div id="adminTabPengaturan" style="display: none;">
+                <div style="background: var(--bg-panel); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border-color);">
+                    <h2 style="font-weight:800; font-size:18px; margin-bottom:15px;">🔒 Pengaturan Keamanan Admin</h2>
+                    <form onsubmit="changeAdminPassword(event)" style="max-width:400px; display:flex; flex-direction:column; gap:12px;">
+                        <div>
+                            <label style="font-size:12px; font-weight:700;">Password Saat Ini</label>
+                            <input type="password" id="currAdminPass" class="form-control" required placeholder="Masukkan password lama">
+                        </div>
+                        <div>
+                            <label style="font-size:12px; font-weight:700;">Password Baru</label>
+                            <input type="password" id="newAdminPass" class="form-control" required placeholder="Password baru">
+                        </div>
+                        <button type="submit" class="btn-submit">Update Password Admin</button>
+                    </form>
+
+                    <hr style="border-color:var(--border-color); margin:25px 0;">
+
+                    <h2 style="font-weight:800; font-size:18px; margin-bottom:15px;">🛠️ Pemeliharaan Data</h2>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="btn-submit" style="background:var(--input-bg); color:var(--text-main); border:1px solid var(--border-color); box-shadow:none; width:auto;" onclick="exportDataJSON()">📥 Ekspor Data JSON</button>
+                        <button class="btn-submit" style="background:var(--danger); width:auto;" onclick="resetDatabase()">⚠️ Reset Data Ke Bawaan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL AUTH ADMIN -->
+    <div class="modal-overlay" id="adminAuthModal">
+        <div class="modal-card" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 style="font-weight: 800; font-size:16px;">🔐 Autentikasi Admin</h3>
+                <button onclick="closeModal('adminAuthModal')" style="background:none; border:none; font-size:22px; cursor:pointer; color:var(--text-main);">✖</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="verifyAdminPass(event)" style="display:flex; flex-direction:column; gap:12px;">
+                    <div>
+                        <label style="font-size:12px; font-weight:700; margin-bottom:4px; display:block;">Masukkan Kata Sandi Admin:</label>
+                        <div style="position:relative;">
+                            <input type="password" id="inputAdminAuthPass" class="form-control" placeholder="Kata Sandi (Default: admin123)" required>
+                            <button type="button" onclick="togglePassVisibility('inputAdminAuthPass')" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:16px;">👁️</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">Masuk Ke Panel Admin ➔</button>
+                </form>
             </div>
         </div>
     </div>
@@ -396,7 +502,7 @@
                             <option value="GoPay / QRIS">GoPay / QRIS</option>
                             <option value="COD (Bayar di Tempat)">COD (Bayar di Tempat)</option>
                         </select>
-                        <select id="buyerCourier" class="form-control" required>
+                        <select id="buyerCourier" class="form-control" required onchange="updateTotalUI()">
                             <option value="">-- Pilih Kurir --</option>
                             <option value="JNE Reguler (Rp 15.000)">JNE Reguler (Rp 15.000)</option>
                             <option value="GoSend Instan (Rp 25.000)">GoSend Instan (Rp 25.000)</option>
@@ -432,12 +538,16 @@
 
     <script>
         // --- DATABASE SEEDING ---
-        let dataProduk = JSON.parse(localStorage.getItem('gsp_max_products_rtl')) || [
-            { id: 1, nama: "iPhone 15 Pro Max", kategori: "Smartphone", harga: 21999000, stok: 5, deskripsi: "Chip A17 Pro super cepat. Desain titanium.", gambar: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=600&q=80", rating: 4.9, terjual: 120, ulasan: ["Sangat puas, kamera luar biasa!"] },
-            { id: 2, nama: "MacBook Pro M3 Max", kategori: "Laptop", harga: 42999000, stok: 3, deskripsi: "Mesin rendering buas. Layar Liquid Retina XDR.", gambar: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80", rating: 5.0, terjual: 45, ulasan: ["Performa monster untuk koding."] },
-            { id: 3, nama: "Sony WH-1000XM5", kategori: "Aksesoris", harga: 5499000, stok: 15, deskripsi: "Headphone Wireless Noise Cancelling terbaik.", gambar: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=600&q=80", rating: 4.8, terjual: 210, ulasan: ["Noise cancelling-nya juara."] },
-            { id: 4, nama: "Samsung S24 Ultra", kategori: "Smartphone", harga: 20500000, stok: 8, deskripsi: "Galaxy AI. Kamera 200MP dengan S-Pen.", gambar: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=80", rating: 4.7, terjual: 90, ulasan: ["Fitur AI sangat membantu."] }
+        const initialProducts = [
+            { id: 1, nama: "iPhone 15 Pro Max", kategori: "Smartphone", harga: 21999000, hargaAwal: 23999000, stok: 5, deskripsi: "Chip A17 Pro super cepat. Desain titanium.", gambar: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=600&q=80", video: "", rating: 4.9, terjual: 120, ulasan: ["Sangat puas, kamera luar biasa!"] },
+            { id: 2, nama: "MacBook Pro M3 Max", kategori: "Laptop", harga: 42999000, hargaAwal: 45999000, stok: 3, deskripsi: "Mesin rendering buas. Layar Liquid Retina XDR.", gambar: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80", video: "", rating: 5.0, terjual: 45, ulasan: ["Performa monster untuk koding."] },
+            { id: 3, nama: "Sony WH-1000XM5", kategori: "Aksesoris", harga: 5499000, hargaAwal: 5999000, stok: 15, deskripsi: "Headphone Wireless Noise Cancelling terbaik.", gambar: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=600&q=80", video: "", rating: 4.8, terjual: 210, ulasan: ["Noise cancelling-nya juara."] },
+            { id: 4, nama: "Samsung S24 Ultra", kategori: "Smartphone", harga: 20500000, hargaAwal: 21999000, stok: 8, deskripsi: "Galaxy AI. Kamera 200MP dengan S-Pen.", gambar: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=80", video: "", rating: 4.7, terjual: 90, ulasan: ["Fitur AI sangat membantu."] }
         ];
+
+        let dataProduk = JSON.parse(localStorage.getItem('gsp_max_products_rtl')) || initialProducts;
+        let adminPassword = localStorage.getItem('gsp_admin_pass') || 'admin123';
+        
         let keranjang = [];
         let wishlist = JSON.parse(localStorage.getItem('gsp_max_wish_rtl')) || [];
         let compareList = [];
@@ -448,6 +558,8 @@
         let tipeDiskon = '';
         let nilaiDiskonNominal = 0;
         let uploadedBase64Img = "";
+        let uploadedBase64Video = "";
+        let selectedUserOrderFilter = 'All';
 
         document.body.classList.toggle('dark-mode', isDarkMode);
 
@@ -459,6 +571,7 @@
             localStorage.setItem('gsp_max_recent_rtl', JSON.stringify(recentlyViewed));
             localStorage.setItem('gsp_max_orders_rtl', JSON.stringify(dataPesanan));
             localStorage.setItem('gsp_theme_rtl', isDarkMode ? 'dark' : 'light');
+            localStorage.setItem('gsp_admin_pass', adminPassword);
         };
 
         function showToast(msg, type = 'success') {
@@ -486,6 +599,71 @@
             showToast(isDarkMode ? "🌙 Dark Mode" : "☀️ Light Mode");
         }
 
+        function togglePassVisibility(id) {
+            const el = document.getElementById(id);
+            if(el.type === 'password') el.type = 'text';
+            else el.type = 'password';
+        }
+
+        function openAdminAuthModal() {
+            document.getElementById('inputAdminAuthPass').value = '';
+            document.getElementById('adminAuthModal').classList.add('show');
+        }
+
+        function verifyAdminPass(e) {
+            e.preventDefault();
+            const input = document.getElementById('inputAdminAuthPass').value;
+            if(input === adminPassword) {
+                closeModal('adminAuthModal');
+                login('admin');
+            } else {
+                showToast("Password Admin Salah!", "error");
+            }
+        }
+
+        function changeAdminPassword(e) {
+            e.preventDefault();
+            const curr = document.getElementById('currAdminPass').value;
+            const next = document.getElementById('newAdminPass').value;
+            if(curr !== adminPassword) {
+                return showToast("Password lama salah", "error");
+            }
+            if(next.length < 4) {
+                return showToast("Password minimal 4 karakter", "error");
+            }
+            adminPassword = next;
+            saveToStorage();
+            showToast("Password Admin Berhasil Diubah!");
+            document.getElementById('currAdminPass').value = '';
+            document.getElementById('newAdminPass').value = '';
+        }
+
+        function exportDataJSON() {
+            const backup = { products: dataProduk, orders: dataPesanan };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `gadgetpro_backup_${Date.now()}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast("Data berhasil diekspor!");
+        }
+
+        function resetDatabase() {
+            if(confirm("Apakah Anda yakin ingin mereset seluruh database produk & transaksi ke data bawaan?")) {
+                localStorage.clear();
+                dataProduk = [...initialProducts];
+                wishlist = [];
+                recentlyViewed = [];
+                dataPesanan = [];
+                adminPassword = 'admin123';
+                saveToStorage();
+                showToast("Database telah di-reset ke data awal");
+                renderAdminStats(); renderAdminInventaris(); renderAdminPesanan();
+            }
+        }
+
         function previewLocalImage(e) {
             const file = e.target.files[0];
             if (file) {
@@ -494,6 +672,24 @@
                     uploadedBase64Img = evt.target.result;
                     document.getElementById('imgPreview').src = uploadedBase64Img;
                     document.getElementById('imgPreviewWrapper').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewLocalVideo(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if(file.size > 2 * 1024 * 1024) {
+                    showToast("Maksimal ukuran video 2MB untuk upload file lokal.", "error");
+                    e.target.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    uploadedBase64Video = evt.target.result;
+                    document.getElementById('videoPreview').src = uploadedBase64Video;
+                    document.getElementById('videoPreviewWrapper').style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             }
@@ -530,7 +726,7 @@
                 document.getElementById('navRoleText').innerText = "Admin";
                 document.querySelectorAll('#wishlistNavBtn, #cartNavBtn, #ordersNavBtn, #compareNavBtn').forEach(e=>e.style.display='none');
                 document.getElementById('view-admin').style.display = 'block';
-                renderAdminInventaris(); renderAdminPesanan();
+                renderAdminStats(); renderAdminInventaris(); renderAdminPesanan();
                 showToast("Login Admin Berhasil");
             } else {
                 document.getElementById('navRoleText').innerText = "Customer";
@@ -576,6 +772,7 @@
             if(sort === 'asc') filtered.sort((a,b) => a.harga - b.harga);
             else if(sort === 'desc') filtered.sort((a,b) => b.harga - a.harga);
             else if(sort === 'popular') filtered.sort((a,b) => b.terjual - a.terjual);
+            else if(sort === 'rating') filtered.sort((a,b) => b.rating - a.rating);
             else filtered.sort((a,b) => b.id - a.id);
 
             if(filtered.length === 0) {
@@ -586,7 +783,8 @@
             grid.innerHTML = filtered.map(p => `
                 <div class="product-card">
                     <div class="badge-container">
-                        ${p.stok <= 5 && p.stok > 0 ? `<div class="product-badge" style="background:var(--warning); color:black;">Sisa ${p.stok}</div>` : ''}
+                        ${p.video ? `<div class="product-badge video-badge">▶ Video</div>` : ''}
+                        ${p.stok <= 3 && p.stok > 0 ? `<div class="product-badge" style="background:var(--warning); color:black;">Sisa ${p.stok}</div>` : ''}
                         ${p.stok === 0 ? `<div class="product-badge" style="background:var(--danger)">Habis</div>` : `<div class="product-badge">${p.kategori}</div>`}
                     </div>
                     <div class="product-img-wrapper">
@@ -600,7 +798,10 @@
                     <div class="product-info">
                         <div class="product-rating">⭐ ${p.rating} <span>(${p.terjual})</span></div>
                         <div class="product-name">${p.nama}</div>
-                        <div class="product-price">${formatRp(p.harga)}</div>
+                        <div class="product-price">
+                            ${p.hargaAwal && p.hargaAwal > p.harga ? `<span class="price-strike">${formatRp(p.hargaAwal)}</span>` : ''}
+                            ${formatRp(p.harga)}
+                        </div>
                         <button class="btn-add-cart" id="btn-add-${p.id}" onclick="addWithAnim(${p.id}, this)" ${p.stok===0?'disabled':''}>
                             ${p.stok===0 ? 'Habis' : '+ Keranjang 🛒'}
                         </button>
@@ -654,9 +855,21 @@
                 ? p.ulasan.map(u => `<div style="background:var(--input-bg); padding:8px 12px; border-radius:8px; margin-bottom:6px; font-size:12px;">💬 "${u}"</div>`).join('')
                 : '<p style="color:var(--text-muted); font-size:12px;">Belum ada ulasan.</p>';
 
+            let mediaSection = "";
+            if (p.video) {
+                mediaSection = `
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        <video src="${p.video}" controls style="width:100%; max-height:220px; border-radius:14px; background:#000; object-fit:contain;"></video>
+                        <img src="${p.gambar}" style="width:100%; height:80px; object-fit:cover; border-radius:10px;">
+                    </div>
+                `;
+            } else {
+                mediaSection = `<img src="${p.gambar}" class="qv-img">`;
+            }
+
             document.getElementById('quickViewBody').innerHTML = `
                 <div class="qv-grid">
-                    <img src="${p.gambar}" class="qv-img">
+                    ${mediaSection}
                     <div>
                         <div class="product-badge" style="display:inline-block; margin-bottom:8px;">${p.kategori}</div>
                         <h2 style="font-weight:800; font-size:18px; margin-bottom:6px;">${p.nama}</h2>
@@ -850,8 +1063,12 @@
 
         function updateTotalUI() {
             const { subtotal, potongan, finalTotal } = hitungTotal();
-            let totalHtml = formatRp(finalTotal);
-            if(potongan > 0) totalHtml += `<br><span style="font-size:11px; color:var(--danger); text-decoration:line-through;">${formatRp(subtotal)}</span>`;
+            const kurirEl = document.getElementById('buyerCourier');
+            const kurirFee = kurirEl ? (parseInt(kurirEl.value.replace(/[^0-9]/g, '')) || 0) : 0;
+            
+            const grandTotal = finalTotal + kurirFee;
+            let totalHtml = formatRp(grandTotal);
+            if(potongan > 0) totalHtml += `<br><span style="font-size:11px; color:var(--danger); text-decoration:line-through;">${formatRp(subtotal + kurirFee)}</span>`;
             document.getElementById('cartModalTotal').innerHTML = totalHtml;
         }
 
@@ -906,19 +1123,40 @@
 
         function printInvoice() {
             if(!lastOrderData) return;
+            printPastInvoice(lastOrderData.id);
+        }
+
+        function printPastInvoice(orderId) {
+            const order = dataPesanan.find(o => o.id === orderId);
+            if(!order) return;
             const w = window.open('', '_blank');
             w.document.write(`
-                <html lang="id" dir="rtl"><head><title>Struk - ${lastOrderData.id}</title></head>
+                <html lang="id" dir="rtl"><head><title>Struk - ${order.id}</title></head>
                 <body style="font-family:sans-serif; padding:20px; text-align:right;">
                     <h2>GadgetStore Pro - Bukti Transaksi</h2>
-                    <p>Invoice: <strong>${lastOrderData.id}</strong></p>
-                    <p>Nama: ${lastOrderData.nama}</p>
+                    <p>Invoice: <strong>${order.id}</strong></p>
+                    <p>Nama Penerima: ${order.nama}</p>
+                    <p>Status Pesanan: ${order.status}</p>
+                    <p>Kurir: ${order.kurir}</p>
+                    <p>Waktu Pemesanan: ${order.waktu}</p>
                     <hr>
-                    <h3>Total: ${formatRp(lastOrderData.total)}</h3>
+                    <table style="width:100%; text-align:right;" dir="rtl">
+                        ${order.items.map(i => `<tr><td style="padding:5px 0;">${i.nama} x${i.qty}</td><td>${formatRp(i.harga * i.qty)}</td></tr>`).join('')}
+                    </table>
+                    <hr>
+                    <h3>Total Bayar: ${formatRp(order.total)}</h3>
                     <script>window.print();<\/script>
                 </body></html>
             `);
             w.document.close();
+        }
+
+        function filterUserOrders(status) {
+            selectedUserOrderFilter = status;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`filterUserOrder_${status}`);
+            if(activeBtn) activeBtn.classList.add('active');
+            showUserOrders();
         }
 
         function showUserOrders() {
@@ -926,15 +1164,22 @@
             document.getElementById('userOrdersView').style.display = 'block';
             
             const list = document.getElementById('userOrderList');
-            if(dataPesanan.length === 0) return list.innerHTML = `<div class="empty-state">Belum Ada Pesanan</div>`;
+            let orders = dataPesanan.slice().reverse();
+            
+            if(selectedUserOrderFilter !== 'All') {
+                orders = orders.filter(o => o.status === selectedUserOrderFilter);
+            }
 
-            list.innerHTML = dataPesanan.slice().reverse().map(o => `
+            if(orders.length === 0) return list.innerHTML = `<div class="empty-state">Belum Ada Pesanan (${selectedUserOrderFilter})</div>`;
+
+            list.innerHTML = orders.map(o => `
                 <div style="background:var(--input-bg); border:1px solid var(--border-color); border-radius:14px; padding:15px; margin-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                         <span style="font-weight:800; color:var(--primary); font-size:14px;">${o.id}</span>
                         <span style="background:rgba(5, 205, 153, 0.15); color:var(--success); padding:3px 8px; border-radius:10px; font-size:11px; font-weight:800;">${o.status}</span>
                     </div>
-                    <div style="font-size:13px; font-weight:800; color:var(--text-main);">${formatRp(o.total)}</div>
+                    <div style="font-size:13px; font-weight:800; color:var(--text-main); margin-bottom:10px;">${formatRp(o.total)}</div>
+                    <button class="btn-submit" style="background:var(--bg-panel); border:1px solid var(--border-color); color:var(--text-main); padding:6px 12px; font-size:11px; width:auto; box-shadow:none;" onclick="printPastInvoice('${o.id}')">🖨️ Cetak Struk</button>
                 </div>
             `).join('');
         }
@@ -949,51 +1194,72 @@
         function switchAdminTab(tab) {
             document.getElementById('adminTabInventaris').style.display = tab === 'inventaris' ? 'block' : 'none';
             document.getElementById('adminTabPesanan').style.display = tab === 'pesanan' ? 'block' : 'none';
+            document.getElementById('adminTabPengaturan').style.display = tab === 'pengaturan' ? 'block' : 'none';
+        }
+
+        function renderAdminStats() {
+            const totalRev = dataPesanan.reduce((sum, o) => sum + o.total, 0);
+            const lowStockCount = dataProduk.filter(p => p.stok <= 3).length;
+            
+            document.getElementById('statRevenue').innerText = formatRp(totalRev);
+            document.getElementById('statOrders').innerText = dataPesanan.length;
+            document.getElementById('statProducts').innerText = dataProduk.length;
+            document.getElementById('statLowStock').innerText = lowStockCount;
         }
 
         function resetAdminForm() {
             document.getElementById('adminForm').reset();
             document.getElementById('editProdId').value = '';
+            document.getElementById('prodOriginalPrice').value = '';
             document.getElementById('adminFormTitle').innerText = '➕ Tambah Produk Baru';
             document.getElementById('btnSaveProd').innerText = 'Simpan Produk';
             document.getElementById('btnCancelEdit').style.display = 'none';
+            
             document.getElementById('imgPreviewWrapper').style.display = 'none';
+            document.getElementById('videoPreviewWrapper').style.display = 'none';
             uploadedBase64Img = "";
+            uploadedBase64Video = "";
+            document.getElementById('imgPreview').src = "";
+            document.getElementById('videoPreview').src = "";
         }
         
         document.getElementById('adminForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const editId = document.getElementById('editProdId').value;
             const finalImg = uploadedBase64Img || document.getElementById('prodImgUrl').value || 'https://via.placeholder.com/600';
+            const finalVideo = uploadedBase64Video || document.getElementById('prodVideoUrl').value || '';
+            const origPrice = Number(document.getElementById('prodOriginalPrice').value) || 0;
 
             if(editId) {
-                // EDIT PRODUCT
                 const p = dataProduk.find(x => x.id == editId);
                 if(p) {
                     p.nama = document.getElementById('prodName').value;
                     p.kategori = document.getElementById('prodCategory').value;
                     p.harga = Number(document.getElementById('prodPrice').value);
+                    p.hargaAwal = origPrice;
                     p.stok = Number(document.getElementById('prodStock').value);
                     p.gambar = finalImg;
+                    p.video = finalVideo;
                     p.deskripsi = document.getElementById('prodDesc').value;
                     showToast('Produk Berhasil Diperbarui!');
                 }
             } else {
-                // ADD NEW PRODUCT
                 dataProduk.push({
                     id: Date.now(),
                     nama: document.getElementById('prodName').value,
                     kategori: document.getElementById('prodCategory').value,
                     harga: Number(document.getElementById('prodPrice').value),
+                    hargaAwal: origPrice,
                     stok: Number(document.getElementById('prodStock').value),
                     gambar: finalImg,
+                    video: finalVideo,
                     deskripsi: document.getElementById('prodDesc').value,
                     rating: 5.0, terjual: 0, ulasan: []
                 });
                 showToast('Produk Berhasil Ditambahkan!');
             }
             
-            saveToStorage(); resetAdminForm(); renderAdminInventaris();
+            saveToStorage(); resetAdminForm(); renderAdminStats(); renderAdminInventaris();
         });
 
         function editProduct(id) {
@@ -1003,13 +1269,22 @@
             document.getElementById('prodName').value = p.nama;
             document.getElementById('prodCategory').value = p.kategori;
             document.getElementById('prodPrice').value = p.harga;
+            document.getElementById('prodOriginalPrice').value = p.hargaAwal || '';
             document.getElementById('prodStock').value = p.stok;
-            document.getElementById('prodImgUrl').value = p.gambar.startsWith('data:') ? '' : p.gambar;
             document.getElementById('prodDesc').value = p.deskripsi;
             
+            document.getElementById('prodImgUrl').value = (p.gambar && p.gambar.startsWith('data:')) ? '' : (p.gambar || '');
             if(p.gambar) {
                 document.getElementById('imgPreview').src = p.gambar;
                 document.getElementById('imgPreviewWrapper').style.display = 'block';
+            }
+
+            document.getElementById('prodVideoUrl').value = (p.video && p.video.startsWith('data:')) ? '' : (p.video || '');
+            if(p.video) {
+                document.getElementById('videoPreview').src = p.video;
+                document.getElementById('videoPreviewWrapper').style.display = 'block';
+            } else {
+                document.getElementById('videoPreviewWrapper').style.display = 'none';
             }
 
             document.getElementById('adminFormTitle').innerText = '✏️ Edit Produk';
@@ -1023,6 +1298,7 @@
             if(p) {
                 p.stok = Math.max(0, p.stok + delta);
                 saveToStorage();
+                renderAdminStats();
                 renderAdminInventaris();
                 showToast(`Stok ${p.nama} diubah jadi ${p.stok}`, "info");
             }
@@ -1031,20 +1307,27 @@
         function deleteProduct(id) {
             if(confirm("Hapus produk ini?")) {
                 dataProduk = dataProduk.filter(p => p.id !== id);
-                saveToStorage(); renderAdminInventaris(); showToast("Produk dihapus", "error");
+                saveToStorage(); renderAdminStats(); renderAdminInventaris(); showToast("Produk dihapus", "error");
             }
         }
         
         function renderAdminInventaris() {
             const list = document.getElementById('adminProductList');
-            list.innerHTML = dataProduk.map(p => `
+            const searchKw = (document.getElementById('adminSearchProd')?.value || '').toLowerCase();
+            
+            let filtered = dataProduk.filter(p => p.nama.toLowerCase().includes(searchKw));
+
+            list.innerHTML = filtered.map(p => `
                 <div style="display:flex; justify-content:space-between; align-items:center; background:var(--input-bg); padding:12px; border-radius:14px; border:1px solid var(--border-color); flex-wrap:wrap; gap:10px;">
                     <div style="display:flex; gap:10px; align-items:center;">
-                        <img src="${p.gambar}" style="width:50px; height:50px; border-radius:10px; object-fit:cover;">
+                        <div style="position:relative;">
+                           <img src="${p.gambar}" style="width:50px; height:50px; border-radius:10px; object-fit:cover;">
+                           ${p.video ? `<div style="position:absolute; bottom:-5px; right:-5px; background:var(--danger); color:white; font-size:9px; font-weight:800; padding:2px 4px; border-radius:4px;">▶</div>` : ''}
+                        </div>
                         <div>
                             <div style="font-weight:800; font-size:14px;">${p.nama}</div>
                             <div style="font-size:12px; color:var(--text-muted);">
-                                ${formatRp(p.harga)} • Stok: <strong>${p.stok}</strong>
+                                ${formatRp(p.harga)} • Stok: <strong style="${p.stok<=3?'color:var(--danger)':''}">${p.stok}</strong>
                             </div>
                         </div>
                     </div>
