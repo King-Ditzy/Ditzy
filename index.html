@@ -463,6 +463,19 @@
                             </div>
                         </div>
 
+                        <!-- UPLOAD VIDEO (FITUR BARU) -->
+                        <div style="grid-column: 1 / -1; background: var(--input-bg); padding: 30px; border-radius: 20px; border: 2px dashed var(--border-color); text-align: center; transition: 0.3s;">
+                            <label style="display:block; font-size:15px; font-weight:800; margin-bottom:15px;">🎬 Video Demo / Ulasan Produk (Opsional)</label>
+                            <div style="display:flex; flex-direction:column; gap:15px; align-items: center;">
+                                <input type="file" id="prodVideoFile" accept="video/*" class="form-control" onchange="previewLocalVideo(event)" style="padding:12px; max-width: 450px; border: 1px solid var(--border-color); background: var(--bg-panel);">
+                                <div style="font-size:12px; color:var(--text-muted); font-weight:800; letter-spacing: 1px;">--- ATAU GUNAKAN URL VIDEO ---</div>
+                                <input type="text" id="prodVideoUrl" class="form-control" placeholder="https://... (Link MP4 / WebM)" style="max-width: 450px; background: var(--bg-panel);">
+                            </div>
+                            <div id="videoPreviewWrapper" style="margin-top:25px; display:none;">
+                                <video id="videoPreview" controls style="max-height:200px; max-width:100%; border-radius:16px; object-fit:cover; border:3px solid var(--primary); box-shadow: var(--glow);"></video>
+                            </div>
+                        </div>
+
                         <div style="grid-column: 1 / -1;">
                             <label style="font-size:14px; font-weight:700; margin-bottom:8px; display:block;">Deskripsi Produk</label>
                             <textarea id="prodDesc" class="form-control" rows="5" required placeholder="Jelaskan spesifikasi detail dan keunggulan produk ini..."></textarea>
@@ -658,12 +671,12 @@
     <script>
         // --- DATABASE SEEDING MENTOK KANAN ---
         const initialProducts = [
-            { id: 1, nama: "Apple iPhone 16 Pro Max 1TB - Titanium", kategori: "Smartphone", harga: 31999000, hargaAwal: 33999000, stok: 15, deskripsi: "Ditenagai Chip A18 Pro Bionic terbaru. Dilengkapi Kamera 48MP dengan sistem Tetraprism zoom optik 5x. Menampilkan Layar Super Retina XDR OLED 120Hz dengan bezel tertipis di industri smartphone saat ini.", gambar: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=600&q=80", rating: 4.9, terjual: 1240, ulasan: ["Gila performanya rata kanan!", "Kamera zoomnya ga ada obat, concert ready.", "Baterai awet seharian penuh meskipun dipakai rekam 4K."] },
-            { id: 2, nama: "MacBook Pro 16 M3 Max 128GB RAM", kategori: "Laptop", harga: 72999000, hargaAwal: 0, stok: 3, deskripsi: "Mesin rendering buas untuk workstation 3D & Video 8K profesional. Ditenagai chip M3 Max dengan GPU 40-core. Daya tahan baterai terdepan hingga 22 jam pemakaian.", gambar: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80", rating: 5.0, terjual: 45, ulasan: ["Buat render animasi 3D di Blender ngebut parah.", "Layar miniled (Liquid Retina XDR) nya bikin mata dimanja banget."] },
-            { id: 3, nama: "Sony WH-1000XM5 Hi-Res Audio", kategori: "Aksesoris", harga: 5499000, hargaAwal: 6200000, stok: 25, deskripsi: "Headphone Wireless Premium dengan sistem Active Noise Cancelling terbaik di kelasnya. Mendukung LDAC codec untuk transmisi audio resolusi tinggi tanpa kompromi.", gambar: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=600&q=80", rating: 4.8, terjual: 890, ulasan: ["ANC nya bikin dunia hening seketika.", "Bass empuk banget, soundstage luas dan ga bikin pusing dipakai lama."] },
-            { id: 4, nama: "Samsung Galaxy S24 Ultra 5G 512GB", kategori: "Smartphone", harga: 21999000, hargaAwal: 23999000, stok: 8, deskripsi: "Galaxy AI is here. Dilengkapi Kamera 200MP revolusioner, prosesor Snapdragon 8 Gen 3 for Galaxy yang super kencang, dibalut dalam rangka Titanium armor yang sangat kokoh.", gambar: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=80", rating: 4.7, terjual: 430, ulasan: ["Fitur Live Translate AI-nya ngebantu banget pas traveling ke Jepang.", "Layar anti-reflective nya gokil."] },
-            { id: 5, nama: "ASUS ROG Zephyrus G14 OLED (2024)", kategori: "Laptop", harga: 32500000, hargaAwal: 35000000, stok: 5, deskripsi: "Laptop gaming ultra-portable super premium. Menggunakan AMD Ryzen 9 terbaru, kartu grafis Nvidia RTX 4070, dan Layar OLED Nebula Display yang memukau untuk gaming dan kreasi konten.", gambar: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=600&q=80", rating: 4.9, terjual: 110, ulasan: ["Desain CNC alumuniumnya elegan banget buat dibawa meeting ke kantor, tapi performa gaming tetap rata kanan!"] },
-            { id: 6, nama: "Apple Watch Ultra 2 Titanium", kategori: "Aksesoris", harga: 13999000, hargaAwal: 15999000, stok: 0, deskripsi: "Smartwatch paling tangguh yang pernah dibuat. Layar dengan kecerahan maksimal 3000 nits. Memiliki fitur Double tap gesture yang inovatif. Dirancang khusus untuk olahraga ekstrem, maraton, dan recreational diving.", gambar: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?auto=format&fit=crop&w=600&q=80", rating: 4.8, terjual: 210, ulasan: [] }
+            { id: 1, nama: "Apple iPhone 16 Pro Max 1TB - Titanium", kategori: "Smartphone", harga: 31999000, hargaAwal: 33999000, stok: 15, deskripsi: "Ditenagai Chip A18 Pro Bionic terbaru. Dilengkapi Kamera 48MP dengan sistem Tetraprism zoom optik 5x. Menampilkan Layar Super Retina XDR OLED 120Hz dengan bezel tertipis di industri smartphone saat ini.", gambar: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=600&q=80", video: "", rating: 4.9, terjual: 1240, ulasan: ["Gila performanya rata kanan!", "Kamera zoomnya ga ada obat, concert ready.", "Baterai awet seharian penuh meskipun dipakai rekam 4K."] },
+            { id: 2, nama: "MacBook Pro 16 M3 Max 128GB RAM", kategori: "Laptop", harga: 72999000, hargaAwal: 0, stok: 3, deskripsi: "Mesin rendering buas untuk workstation 3D & Video 8K profesional. Ditenagai chip M3 Max dengan GPU 40-core. Daya tahan baterai terdepan hingga 22 jam pemakaian.", gambar: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80", video: "", rating: 5.0, terjual: 45, ulasan: ["Buat render animasi 3D di Blender ngebut parah.", "Layar miniled (Liquid Retina XDR) nya bikin mata dimanja banget."] },
+            { id: 3, nama: "Sony WH-1000XM5 Hi-Res Audio", kategori: "Aksesoris", harga: 5499000, hargaAwal: 6200000, stok: 25, deskripsi: "Headphone Wireless Premium dengan sistem Active Noise Cancelling terbaik di kelasnya. Mendukung LDAC codec untuk transmisi audio resolusi tinggi tanpa kompromi.", gambar: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=600&q=80", video: "", rating: 4.8, terjual: 890, ulasan: ["ANC nya bikin dunia hening seketika.", "Bass empuk banget, soundstage luas dan ga bikin pusing dipakai lama."] },
+            { id: 4, nama: "Samsung Galaxy S24 Ultra 5G 512GB", kategori: "Smartphone", harga: 21999000, hargaAwal: 23999000, stok: 8, deskripsi: "Galaxy AI is here. Dilengkapi Kamera 200MP revolusioner, prosesor Snapdragon 8 Gen 3 for Galaxy yang super kencang, dibalut dalam rangka Titanium armor yang sangat kokoh.", gambar: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=80", video: "", rating: 4.7, terjual: 430, ulasan: ["Fitur Live Translate AI-nya ngebantu banget pas traveling ke Jepang.", "Layar anti-reflective nya gokil."] },
+            { id: 5, nama: "ASUS ROG Zephyrus G14 OLED (2024)", kategori: "Laptop", harga: 32500000, hargaAwal: 35000000, stok: 5, deskripsi: "Laptop gaming ultra-portable super premium. Menggunakan AMD Ryzen 9 terbaru, kartu grafis Nvidia RTX 4070, dan Layar OLED Nebula Display yang memukau untuk gaming dan kreasi konten.", gambar: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=600&q=80", video: "", rating: 4.9, terjual: 110, ulasan: ["Desain CNC alumuniumnya elegan banget buat dibawa meeting ke kantor, tapi performa gaming tetap rata kanan!"] },
+            { id: 6, nama: "Apple Watch Ultra 2 Titanium", kategori: "Aksesoris", harga: 13999000, hargaAwal: 15999000, stok: 0, deskripsi: "Smartwatch paling tangguh yang pernah dibuat. Layar dengan kecerahan maksimal 3000 nits. Memiliki fitur Double tap gesture yang inovatif. Dirancang khusus untuk olahraga ekstrem, maraton, dan recreational diving.", gambar: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?auto=format&fit=crop&w=600&q=80", video: "", rating: 4.8, terjual: 210, ulasan: [] }
         ];
 
         let dataProduk = JSON.parse(localStorage.getItem('gsp_maxed_products')) || initialProducts;
@@ -677,6 +690,7 @@
         let isDarkMode = localStorage.getItem('gsp_maxed_theme') !== 'light';
         let diskonAktif = 0; let tipeDiskon = ''; let nilaiDiskonNominal = 0;
         let uploadedBase64Img = "";
+        let uploadedBase64Video = ""; // FITUR BARU
 
         document.body.classList.toggle('dark-mode', isDarkMode);
 
@@ -936,6 +950,8 @@
                         </div>
                         
                         <p style="color:var(--text-muted); margin-bottom:auto; font-size:15px; line-height:1.7; padding-bottom: 25px;">${p.deskripsi}</p>
+
+                        ${p.video ? `<div style="margin-bottom:25px;"><label style="font-size:13px; font-weight:800; display:block; margin-bottom:8px; color:var(--primary);">🎬 VIDEO DEMO PRODUK:</label><video controls style="width:100%; max-height:220px; border-radius:16px; object-fit:cover; border:1px solid var(--border-color);"><source src="${p.video}">Browser Anda tidak mendukung tag video.</video></div>` : ''}
                         
                         <button class="btn-submit" style="padding:20px; font-size:16px; border-radius: 20px;" onclick="addToCart(${p.id}); closeModal('quickViewModal'); openCartModal();" ${p.stok===0?'disabled':''}>
                             ${p.stok===0 ? 'Maaf, Stok Habis / Out of Stock' : 'Tambahkan ke Tas Belanja 🛍️'}
@@ -1315,6 +1331,9 @@
             
             document.getElementById('imgPreviewWrapper').style.display = 'none';
             uploadedBase64Img = ""; document.getElementById('imgPreview').src = "";
+            
+            document.getElementById('videoPreviewWrapper').style.display = 'none';
+            uploadedBase64Video = ""; document.getElementById('videoPreview').src = "";
         }
         
         function previewLocalImage(e) {
@@ -1334,10 +1353,29 @@
             }
         }
 
+        // FITUR BARU: PREVIEW VIDEO LOKAL
+        function previewLocalVideo(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if(file.size > 15 * 1024 * 1024) { // 15MB limit warning for video
+                    showToast("Sistem menolak: Ukuran video terlalu besar (>15MB). Harap kompres terlebih dahulu.", "error");
+                    e.target.value = ''; return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    uploadedBase64Video = evt.target.result;
+                    document.getElementById('videoPreview').src = uploadedBase64Video;
+                    document.getElementById('videoPreviewWrapper').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         document.getElementById('adminForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const editId = document.getElementById('editProdId').value;
             const finalImg = uploadedBase64Img || document.getElementById('prodImgUrl').value || 'https://images.unsplash.com/photo-1526406915894-7bcd65f60845?auto=format&fit=crop&w=600&q=80';
+            const finalVideo = uploadedBase64Video || document.getElementById('prodVideoUrl').value || '';
             const price = Number(document.getElementById('prodPrice').value) || 0;
             const origPrice = Number(document.getElementById('prodOriginalPrice').value) || 0;
 
@@ -1350,7 +1388,7 @@
                     p.kategori = document.getElementById('prodCategory').value;
                     p.harga = price; p.hargaAwal = origPrice;
                     p.stok = Number(document.getElementById('prodStock').value);
-                    p.gambar = finalImg; p.deskripsi = document.getElementById('prodDesc').value;
+                    p.gambar = finalImg; p.video = finalVideo; p.deskripsi = document.getElementById('prodDesc').value;
                     showToast('Sukses! Data produk berhasil dimutakhirkan.');
                 }
             } else {
@@ -1358,7 +1396,7 @@
                     id: Date.now(),
                     nama: document.getElementById('prodName').value, kategori: document.getElementById('prodCategory').value,
                     harga: price, hargaAwal: origPrice, stok: Number(document.getElementById('prodStock').value),
-                    gambar: finalImg, deskripsi: document.getElementById('prodDesc').value,
+                    gambar: finalImg, video: finalVideo, deskripsi: document.getElementById('prodDesc').value,
                     rating: 5.0, terjual: 0, ulasan: []
                 });
                 showToast('Sukses! Entri produk baru telah ditambahkan ke sistem.');
@@ -1390,6 +1428,15 @@
                 document.getElementById('imgPreviewWrapper').style.display = 'block';
             }
 
+            document.getElementById('prodVideoUrl').value = (p.video && p.video.startsWith('data:')) ? '' : (p.video || '');
+            if(p.video) {
+                document.getElementById('videoPreview').src = p.video;
+                document.getElementById('videoPreviewWrapper').style.display = 'block';
+            } else {
+                document.getElementById('videoPreviewWrapper').style.display = 'none';
+                document.getElementById('videoPreview').src = '';
+            }
+
             document.getElementById('adminFormTitle').innerHTML = '<span>✏️</span> Sunting Data Produk';
             document.getElementById('btnSaveProd').innerHTML = '🔄 Perbarui Entri Database';
             document.getElementById('btnCancelEdit').style.display = 'inline-block';
@@ -1413,7 +1460,7 @@
                     <div style="display:flex; gap:18px; align-items:center;">
                         <img src="${p.gambar}" style="width:85px; height:85px; border-radius:14px; object-fit:cover; border: 1px solid var(--border-color); box-shadow: var(--shadow);">
                         <div>
-                            <div style="font-weight:800; font-size:16px; margin-bottom:8px; letter-spacing: -0.3px;">${p.nama}</div>
+                            <div style="font-weight:800; font-size:16px; margin-bottom:8px; letter-spacing: -0.3px;">${p.nama} ${p.video ? '🎬' : ''}</div>
                             <div style="font-size:14px; color:var(--text-muted); display: flex; gap: 12px; align-items: center; background: var(--bg-panel); display:inline-flex; padding: 4px 12px; border-radius: 10px; border: 1px solid var(--border-color);">
                                 <span style="color:var(--text-main); font-weight:800;">${formatRp(p.harga)}</span> 
                                 <span style="width:4px; height:4px; border-radius:50%; background:var(--border-color);"></span>
