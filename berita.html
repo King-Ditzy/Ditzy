@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFO VIRAL JATENG - Portal Berita Terkini</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased selection:bg-red-600 selection:text-white">
+
+    <!-- Container Utama Website -->
+    <div class="max-w-4xl mx-auto bg-white min-h-screen shadow-2xl flex flex-col justify-between">
+
+        <div>
+            <!-- TOP BAR (HEADER ATAS) -->
+            <div class="bg-gray-900 text-gray-300 px-4 py-2 text-xs flex justify-between items-center border-b border-gray-800">
+                <div class="flex items-center space-x-3 space-x-reverse font-semibold">
+                    <span class="text-red-500 font-bold">SELASA, 8 SEPT 2026</span>
+                    <span class="hidden sm:inline text-gray-500">|</span>
+                    <span class="hidden sm:inline text-gray-400">Jawa Tengah & Sekitarnya</span>
+                </div>
+                <div class="flex space-x-3 space-x-reverse text-sm">
+                    <a href="#" class="hover:text-red-500 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-red-500 transition"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" class="hover:text-red-500 transition"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="hover:text-red-500 transition"><i class="fab fa-facebook"></i></a>
+                </div>
+            </div>
+
+            <!-- LOGO UTAMA -->
+            <header class="bg-white px-6 py-5 border-b border-gray-100 flex justify-between items-center sticky top-0 z-40 shadow-sm">
+                <div class="cursor-pointer" onclick="kembaliKeHome()">
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tighter text-gray-900">
+                        INFO<span class="text-red-600">VIRAL</span>
+                    </h1>
+                    <p class="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Jateng & Nasional</p>
+                </div>
+                <div class="text-left hidden sm:block">
+                    <span class="inline-block bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full animate-pulse">
+                        🔴 LIVE TRENDING
+                    </span>
+                </div>
+            </header>
+
+            <!-- NAVIGASI KATEGORI -->
+            <nav class="bg-red-600 text-white shadow-md sticky top-[73px] z-30">
+                <div class="px-4 flex space-x-6 space-x-reverse text-xs sm:text-sm font-bold uppercase tracking-wider overflow-x-auto whitespace-nowrap py-3 no-scrollbar">
+                    <a href="#" class="hover:text-gray-200 transition text-white border-b-2 border-white pb-0.5">Terkini</a>
+                    <a href="#" class="hover:text-gray-200 transition opacity-90">Viral</a>
+                    <a href="#" class="hover:text-gray-200 transition opacity-90">Jateng</a>
+                    <a href="#" class="hover:text-gray-200 transition opacity-90">Nasional</a>
+                    <a href="#" class="hover:text-gray-200 transition opacity-90">E-Sports</a>
+                    <a href="#" class="hover:text-gray-200 transition opacity-90">Kuliner</a>
+                    <a href="#" class="hover:text-gray-200 transition opacity-90">Otomotif</a>
+                </div>
+            </nav>
+
+            <!-- ========================================== -->
+            <!-- HALAMAN UTAMA (HOME VIEW) -->
+            <!-- ========================================== -->
+            <main id="home-page" class="p-4 sm:p-6 fade-in">
+                
+                <!-- Berita Utama / Hero Section -->
+                <div class="mb-8 cursor-pointer group rounded-xl overflow-hidden shadow-md bg-white border border-gray-100" 
+                     onclick="bacaArtikel('VIRAL NASIONAL', 'Heboh! Ribuan Warga Padati Alun-Alun Demi Nonton Bareng Timnas Indonesia eSports', 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80')">
+                    <div class="relative overflow-hidden aspect-video sm:h-[380px]">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80" 
+                             alt="Hero" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5 sm:p-6">
+                            <span class="bg-red-600 text-white text-[10px] font-extrabold px-2.5 py-1 uppercase rounded w-max mb-2 shadow">Hot News</span>
+                            <h2 class="text-xl sm:text-3xl font-extrabold text-white leading-tight group-hover:text-red-300 transition">
+                                Heboh! Ribuan Warga Padati Alun-Alun Demi Nonton Bareng Timnas Indonesia eSports
+                            </h2>
+                            <p class="text-gray-300 text-xs mt-2 hidden sm:block">Atmosfer luar biasa terasa di pusat kota saat ribuan suporter berkumpul memberikan dukungan penuh...</p>
+                            <span class="text-gray-400 text-[11px] mt-3 font-medium">Tim Redaksi • 1 Jam yang lalu</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bagian Daftar Berita Viral Lainnya -->
+                <div class="flex items-center justify-between mb-4 border-b-2 border-red-600 pb-2">
+                    <h3 class="font-extrabold text-lg text-gray-900 uppercase tracking-tight">Berita Viral Pilihan</h3>
+                    <span class="text-xs text-red-600 font-bold cursor-pointer hover:underline">Indeks Berita &rarr;</span>
+                </div>
+
+                <div class="space-y-4">
+                    
+                    <!-- Item Berita 1 -->
+                    <div class="flex gap-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100 cursor-pointer group hover:shadow-md transition"
+                         onclick="bacaArtikel('JAWA TENGAH', 'Warga Geger Temukan Fenomena Awan Berbentuk Gelombang Tsunami di Langit Pantura', 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=600&q=80')">
+                        <img src="https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=600&q=80" 
+                             alt="Thumbnail" class="w-28 sm:w-36 h-24 sm:h-28 object-cover rounded-lg flex-shrink-0 group-hover:scale-105 transition">
+                        <div class="flex flex-col justify-center">
+                            <span class="text-red-600 text-[10px] font-bold uppercase mb-1">Jateng</span>
+                            <h4 class="font-bold text-gray-900 text-sm sm:text-base group-hover:text-red-600 transition leading-snug">
+                                Warga Geger Temukan Fenomena Awan Berbentuk Gelombang Tsunami di Langit Pantura
+                            </h4>
+                            <span class="text-gray-400 text-[11px] mt-2 font-medium">3 Jam yang lalu</span>
+                        </div>
+                    </div>
+
+                    <!-- Item Berita 2 -->
+                    <div class="flex gap-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100 cursor-pointer group hover:shadow-md transition"
+                         onclick="bacaArtikel('KULINER VIRAL', 'Viral Penjual Nasi Goreng Cantik Mirip Artis Korea, Antrean Pembeli Bikin Macet Jalan', 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80')">
+                        <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80" 
+                             alt="Thumbnail" class="w-28 sm:w-36 h-24 sm:h-28 object-cover rounded-lg flex-shrink-0 group-hover:scale-105 transition">
+                        <div class="flex flex-col justify-center">
+                            <span class="text-red-600 text-[10px] font-bold uppercase mb-1">Kuliner</span>
+                            <h4 class="font-bold text-gray-900 text-sm sm:text-base group-hover:text-red-600 transition leading-snug">
+                                Viral Penjual Nasi Goreng Cantik Mirip Artis Korea, Antrean Pembeli Bikin Macet Jalan
+                            </h4>
+                            <span class="text-gray-400 text-[11px] mt-2 font-medium">4 Jam yang lalu</span>
+                        </div>
+                    </div>
+
+                    <!-- Item Berita 3 -->
+                    <div class="flex gap-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100 cursor-pointer group hover:shadow-md transition"
+                         onclick="bacaArtikel('E-SPORTS', 'Player Indonesia Borong Diamond Free Fire MAX Usai Event Diskon Besar-Besaran', 'https://images.unsplash.com/photo-1580234811497-9df7fd2f357e?auto=format&fit=crop&w=600&q=80')">
+                        <img src="https://images.unsplash.com/photo-1580234811497-9df7fd2f357e?auto=format&fit=crop&w=600&q=80" 
+                             alt="Thumbnail" class="w-28 sm:w-36 h-24 sm:h-28 object-cover rounded-lg flex-shrink-0 group-hover:scale-105 transition">
+                        <div class="flex flex-col justify-center">
+                            <span class="text-red-600 text-[10px] font-bold uppercase mb-1">E-Sports</span>
+                            <h4 class="font-bold text-gray-900 text-sm sm:text-base group-hover:text-red-600 transition leading-snug">
+                                Player Indonesia Borong Diamond Free Fire MAX Usai Event Diskon Besar-Besaran
+                            </h4>
+                            <span class="text-gray-400 text-[11px] mt-2 font-medium">5 Jam yang lalu</span>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            <!-- ========================================== -->
+            <!-- HALAMAN BACA ARTIKEL (ARTICLE VIEW) -->
+            <!-- ========================================== -->
+            <main id="article-page" class="hidden p-4 sm:p-6 fade-in">
+                <button onclick="kembaliKeHome()" class="mb-4 inline-flex items-center text-xs font-bold bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-full transition shadow-sm">
+                    <i class="fas fa-arrow-right ml-2"></i> Kembali ke Beranda
+                </button>
+
+                <div class="mb-6">
+                    <span id="art-category" class="bg-red-600 text-white text-[10px] font-extrabold px-2.5 py-1 uppercase rounded inline-block mb-3">KATEGORI</span>
+                    <h1 id="art-title" class="text-2xl sm:text-4xl font-black text-gray-900 leading-tight mb-4">
+                        Judul Artikel Lengkap
+                    </h1>
+                    <div class="flex items-center text-xs text-gray-500 border-y border-gray-100 py-3 space-x-4 space-x-reverse font-medium">
+                        <span>Oleh: <strong class="text-gray-800">Tim Redaksi Info Viral</strong></span>
+                        <span>•</span>
+                        <span>Selasa, 8 Sept 2026</span>
+                    </div>
+                </div>
+
+                <div class="rounded-xl overflow-hidden shadow-lg mb-6">
+                    <img id="art-img" src="" alt="Gambar Berita" class="w-full h-[250px] sm:h-[400px] object-cover">
+                </div>
+
+                <div class="text-gray-700 leading-loose space-y-4 text-base sm:text-lg">
+                    <p>
+                        <strong class="text-gray-900">SEMARANG</strong> — Suasana meriah menyelimuti pusat kota baru-baru ini setelah sebuah peristiwa menarik perhatian publik secara masif. Berita ini dengan cepat menyebar di berbagai platform media sosial seperti TikTok, Instagram, hingga grup-grup percakapan warga.
+                    </p>
+                    <p>
+                        Berdasarkan pantauan di lapangan, antusiasme masyarakat terlihat sangat tinggi. Banyak warga yang sengaja datang dari luar kota hanya untuk menyaksikan langsung momen seru tersebut secara langsung bersama rekan maupun keluarga tercinta.
+                    </p>
+                    <div class="bg-red-50 border-r-4 border-red-600 p-4 my-6 rounded-l-lg text-gray-800 font-medium italic">
+                        "Kami sama sekali tidak menyangka respon masyarakat akan sebegini luar biasa. Ini membuktikan tingginya solidaritas dan kebersamaan warga di sini," ujar salah satu tokoh masyarakat setempat.
+                    </div>
+                    <p>
+                        Hingga berita ini diturunkan, situasi terpantau aman, tertib, dan terkendali. Petugas gabungan juga tampak bersiaga di sekitar lokasi guna mengatur arus lalu lintas agar tidak terjadi kemacetan panjang akibat lonjakan warga yang hadir.
+                    </p>
+                </div>
+            </main>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="bg-gray-900 text-gray-400 py-8 px-6 text-center text-xs mt-10 border-t border-gray-800">
+            <h2 class="text-lg font-black text-white tracking-tighter mb-2">INFO<span class="text-red-600">VIRAL</span></h2>
+            <p class="text-gray-500 mb-4 max-w-sm mx-auto">Portal berita independen menyajikan informasi aktual, cepat, dan terpercaya seputar Jawa Tengah dan nasional.</p>
+            <div class="border-t border-gray-800 w-24 mx-auto my-4"></div>
+            <p class="text-gray-600">&copy; 2026 Info Viral Indonesia. All Rights Reserved.</p>
+        </footer>
+
+    </div>
+
+    <!-- SCRIPT INTERAKTIF PINDAH HALAMAN -->
+    <script>
+        function bacaArtikel(kategori, judul, gambarUrl) {
+            // Sembunyikan Home, Tampilkan Halaman Artikel
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('article-page').style.display = 'block';
+
+            // Masukkan data dinamis ke halaman artikel
+            document.getElementById('art-category').innerText = kategori;
+            document.getElementById('art-title').innerText = judul;
+            document.getElementById('art-img').src = gambarUrl;
+
+            // Scroll otomatis ke paling atas halaman
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function kembaliKeHome() {
+            // Sembunyikan Halaman Artikel, Tampilkan Home
+            document.getElementById('article-page').style.display = 'none';
+            document.getElementById('home-page').style.display = 'block';
+
+            // Scroll otomatis ke paling atas halaman
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
